@@ -3,10 +3,7 @@ useClient().form();
 </script>
 
 <template>
-  <progress
-    class="progress w-full progress-primary"
-    v-if="useClient().loading"
-  ></progress>
+  <Loading v-if="useClient().loading" />
 
   <form @submit="useClient().save">
     <FormHeader :title="useClient().client.number" icon="fa-user">
@@ -15,19 +12,14 @@ useClient().form();
           <FaIcon icon="fa-solid fa-save " />
           {{ useClient().client.id === "" ? "Create Client" : "Save" }}
         </button>
-        <button
-          v-if="useClient().client.id !== ''"
-          class="btn btn-sm btn-error gap-2 btn-outline"
-        >
-          <FaIcon icon="fa-solid fa-close" /> Delete
+        <button v-if="useClient().client.id !== ''" class="btn btn-sm btn-error gap-2 btn-outline">
+          <FaIcon icon="fa-solid fa-close" />
+          Delete
         </button>
       </template>
     </FormHeader>
 
-    <ul
-      v-if="useClient().hasErrors"
-      class="border-2 border-warning rounded p-5 mt-5 mb-10"
-    >
+    <ul v-if="useClient().hasErrors" class="border-2 border-warning rounded p-5 mt-5 mb-10">
       <li v-for="e in useClient().client.errors()" class="text-warning">
         {{ e }}
       </li>
@@ -36,22 +28,13 @@ useClient().form();
     <FormSection title="Client Information" description="Manage your clients">
       <ClientFormBasic />
     </FormSection>
-    <FormSection
-      title="Address"
-      description="Enter the full registered address."
-    >
+    <FormSection title="Address" description="Enter the full registered address.">
       <ClientFormAddress />
     </FormSection>
-    <FormSection
-      title="Primary Contact"
-      description="Provide main contact person and email address."
-    >
+    <FormSection title="Primary Contact" description="Provide main contact person and email address.">
       <ClientFormContact />
     </FormSection>
-    <FormSection
-      title="Conditions"
-      description="Specify agreed payment terms and conditions."
-    >
+    <FormSection title="Conditions" description="Specify agreed payment terms and conditions.">
       <ClientFormConditions />
     </FormSection>
   </form>

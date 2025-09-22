@@ -159,6 +159,9 @@ importers:
       '@vuepic/vue-datepicker':
         specifier: ^8.5.1
         version: 8.5.1(vue@3.4.27)
+      ace-builds:
+        specifier: ^1.43.3
+        version: 1.43.3
       axios:
         specifier: ^1.6.8
         version: 1.6.8
@@ -195,6 +198,9 @@ importers:
       vue-router:
         specifier: ^4.3.0
         version: 4.3.2(vue@3.4.27)
+      vue3-ace-editor:
+        specifier: ^2.2.4
+        version: 2.2.4(ace-builds@1.43.3)(vue@3.4.27)
       vue3-popper:
         specifier: ^1.5.0
         version: 1.5.0(vue@3.4.27)
@@ -208,12 +214,21 @@ importers:
       '@types/node':
         specifier: ^20.12.10
         version: 20.12.10
+      '@types/nunjucks':
+        specifier: ^3.2.6
+        version: 3.2.6
       daisyui:
         specifier: ^3.9.4
         version: 3.9.4
       sass:
         specifier: ^1.77.0
         version: 1.77.0
+
+  packages/htmlrender:
+    dependencies:
+      nunjucks:
+        specifier: ^3.2.4
+        version: 3.2.4
 
 packages:
 
@@ -3446,6 +3461,10 @@ packages:
     dependencies:
       undici-types: 5.26.5
 
+  /@types/nunjucks@3.2.6:
+    resolution: {integrity: sha512-pHiGtf83na1nCzliuAdq8GowYiXvH5l931xZ0YEHaLMNFgynpEqx+IPStlu7UaDkehfvl01e4x/9Tpwhy7Ue3w==}
+    dev: true
+
   /@types/pino-pretty@5.0.0:
     resolution: {integrity: sha512-N1uzqSzioqz8R3AkDbSJwcfDWeI3YMPNapSQQhnB2ISU4NYgUIcAh+hYT5ygqBM+klX4htpEhXMmoJv3J7GrdA==}
     deprecated: This is a stub types definition. pino-pretty provides its own type definitions, so you do not need this installed.
@@ -4195,7 +4214,7 @@ packages:
     dependencies:
       '@vueuse/core': 10.9.0(vue@3.4.27)
       '@vueuse/shared': 10.9.0(vue@3.4.27)
-      vue-demi: 0.14.7(vue@3.4.27)
+      vue-demi: 0.14.10(vue@3.4.27)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -4207,7 +4226,7 @@ packages:
       '@types/web-bluetooth': 0.0.20
       '@vueuse/metadata': 10.9.0
       '@vueuse/shared': 10.9.0(vue@3.4.27)
-      vue-demi: 0.14.7(vue@3.4.27)
+      vue-demi: 0.14.10(vue@3.4.27)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -4258,7 +4277,7 @@ packages:
       '@vueuse/shared': 10.9.0(vue@3.4.27)
       axios: 1.6.8
       focus-trap: 7.5.4
-      vue-demi: 0.14.7(vue@3.4.27)
+      vue-demi: 0.14.10(vue@3.4.27)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -4271,7 +4290,7 @@ packages:
   /@vueuse/shared@10.9.0(vue@3.4.27):
     resolution: {integrity: sha512-Uud2IWncmAfJvRaFYzv5OHDli+FbOzxiVEQdLCKQKLyhz94PIyFC3CHcH7EDMwIn8NPtD06+PNbC/PiO0LGLtw==}
     dependencies:
-      vue-demi: 0.14.7(vue@3.4.27)
+      vue-demi: 0.14.10(vue@3.4.27)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -4305,6 +4324,10 @@ packages:
     dependencies:
       mime-types: 2.1.35
       negotiator: 0.6.3
+
+  /ace-builds@1.43.3:
+    resolution: {integrity: sha512-MCl9rALmXwIty/4Qboijo/yNysx1r6hBTzG+6n/TiOm5LFhZpEvEIcIITPFiEOEFDfgBOEmxu+a4f54LEFM6Sg==}
+    dev: false
 
   /acorn-class-fields@1.0.0(acorn@8.10.0):
     resolution: {integrity: sha512-l+1FokF34AeCXGBHkrXFmml9nOIRI+2yBnBpO5MaVAaTIJ96irWLtcCxX+7hAp6USHFCe+iyyBB4ZhxV807wmA==}
@@ -11464,6 +11487,10 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: false
 
+  /resize-observer-polyfill@1.5.1:
+    resolution: {integrity: sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==}
+    dev: false
+
   /resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
@@ -13561,6 +13588,21 @@ packages:
       ufo: 1.5.3
     dev: false
 
+  /vue-demi@0.14.10(vue@3.4.27):
+    resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
+    engines: {node: '>=12'}
+    hasBin: true
+    requiresBuild: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+    dependencies:
+      vue: 3.4.27
+    dev: false
+
   /vue-demi@0.14.7(vue@3.4.27):
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
     engines: {node: '>=12'}
@@ -13614,6 +13656,17 @@ packages:
       vue: 3.4.27
       vue-observe-visibility: 2.0.0-alpha.1(vue@3.4.27)
       vue-resize: 2.0.0-alpha.1(vue@3.4.27)
+    dev: false
+
+  /vue3-ace-editor@2.2.4(ace-builds@1.43.3)(vue@3.4.27):
+    resolution: {integrity: sha512-FZkEyfpbH068BwjhMyNROxfEI8135Sc+x8ouxkMdCNkuj/Tuw83VP/gStFQqZHqljyX9/VfMTCdTqtOnJZGN8g==}
+    peerDependencies:
+      ace-builds: '*'
+      vue: ^3
+    dependencies:
+      ace-builds: 1.43.3
+      resize-observer-polyfill: 1.5.1
+      vue: 3.4.27
     dev: false
 
   /vue3-popper@1.5.0(vue@3.4.27):

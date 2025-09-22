@@ -1,7 +1,9 @@
-import { type ClientType } from "~~/models/client";
+import { Client, type ClientType } from "~~/models/client";
 import { InvoiceOrOffer } from "~~/models/invoiceOrOffer";
 
 import * as dateFns from "date-fns";
+import _ from "lodash";
+import type { Template } from "~/models/template";
 
 export default defineStore("invoiceOrOffer", () => {
   const type = (firstToUpper = false) => {
@@ -10,15 +12,20 @@ export default defineStore("invoiceOrOffer", () => {
     return res;
   };
   const singularType = () => type().slice(0, type().length - 1);
-  const invoicesOrOffers = ref([]);
+  const invoicesOrOffers = ref<InvoiceOrOffer[]>([]);
   const invoiceOrOffer = ref(new InvoiceOrOffer());
-  const clients = ref([]);
+  const clients = ref<Client[]>([]);
+  const templates = ref<Template[]>([]);
   const hasErrors = ref(false);
   const title = ref();
   const mustSave = ref(0);
   const offerToConvert = ref(new InvoiceOrOffer());
 
   const loading = ref(false);
+
+  function setTemplate(id: string) {
+    invoiceOrOffer.value.templateId = id;
+  }
 
   function setClient(client: ClientType) {
     invoiceOrOffer.value.clientId = client.id;
@@ -35,10 +42,7 @@ export default defineStore("invoiceOrOffer", () => {
           amount: 0,
         });
     }
-    if (
-      invoiceOrOffer.value.data.positions[0].price === null &&
-      invoiceOrOffer.value.data.positions[0].quantity === null
-    ) {
+    if (invoiceOrOffer.value.data.positions[0].price === null && invoiceOrOffer.value.data.positions[0].quantity === null) {
       invoiceOrOffer.value.removePosition(0);
     }
     invoiceOrOffer.value.recalc();
@@ -47,12 +51,7 @@ export default defineStore("invoiceOrOffer", () => {
   function offerToInvoice(io: InvoiceOrOffer) {}
 
   function setStatus(io: InvoiceOrOffer) {
-    const status =
-      io.status === "pending"
-        ? io.type === "invoice"
-          ? "paid"
-          : "accepted"
-        : "pending";
+    const status = io.status === "pending" ? (io.type === "invoice" ? "paid" : "accepted") : "pending";
     io.setStatus(status);
     useApi().invoicesOrOffers(singularType()).setStatus(io.id, status);
   }
@@ -64,9 +63,7 @@ export default defineStore("invoiceOrOffer", () => {
     }
     hasErrors.value = false;
     const isNew = invoiceOrOffer.value.id === "";
-    const ioo = await useApi()
-      .invoicesOrOffers(singularType())
-      .saveOrUpdate(invoiceOrOffer.value, !isNew);
+    const ioo = await useApi().invoicesOrOffers(singularType()).saveOrUpdate(invoiceOrOffer.value, !isNew);
     if (isNew) {
       useRouter().replace(`/${type()}/${ioo.id}`);
     }
@@ -75,9 +72,7 @@ export default defineStore("invoiceOrOffer", () => {
 
   async function list() {
     loading.value = true;
-    invoicesOrOffers.value = await useApi()
-      .invoicesOrOffers(singularType())
-      .getAll();
+    invoicesOrOffers.value = await useApi().invoicesOrOffers(singularType()).getAll();
     loading.value = false;
   }
 
@@ -99,9 +94,11 @@ export default defineStore("invoiceOrOffer", () => {
     mustSave.value++;
   }
 
+  async function duplicate(id: string) {}
+
   async function maybeDoConvertOffer() {
     if (useRoute().query.offer) {
-      Object.assign(
+      _.mergeWith(
         offerToConvert.value,
         await useApi()
           .invoicesOrOffers("offer")
@@ -114,21 +111,14 @@ export default defineStore("invoiceOrOffer", () => {
       invoiceOrOffer.value.offerId = offerToConvert.value.id;
       if (useRoute().query.option === "partial") {
         offerToConvert.value.data.positions.map((p) => {
-          if (useRoute().query.valueType === "percent")
-            p.price = (p.price / 100) * Number(useRoute().query.value);
-          if (useRoute().query.valueType === "fixed")
-            p.price =
-              ((Number(useRoute().query.value) / 100) * p.totalPercentage) /
-              p.quantity;
+          if (useRoute().query.valueType === "percent") p.price = (p.price / 100) * Number(useRoute().query.value);
+          if (useRoute().query.valueType === "fixed") p.price = ((Number(useRoute().query.value) / 100) * p.totalPercentage) / p.quantity;
           p.price = Math.round(p.price * 100) / 100;
           invoiceOrOffer.value.addPosition(p);
         });
       }
       if (useRoute().query.option === "final") {
-        const previousNet = offerToConvert.value.invoices.reduce(
-          (p, c) => p + c.data.net,
-          0,
-        );
+        const previousNet = offerToConvert.value.invoices.reduce((p, c) => p + c.data.net, 0);
         const newNet = offerToConvert.value.data.net - previousNet;
         offerToConvert.value.data.positions.map((p) => {
           p.price = ((newNet / 100) * p.totalPercentage) / p.quantity;
@@ -145,55 +135,44 @@ export default defineStore("invoiceOrOffer", () => {
       invoiceOrOffer.value.invoices = offerToConvert.value.invoices;
       invoiceOrOffer.value.recalc();
     } else {
-      Object.assign(offerToConvert.value, new InvoiceOrOffer());
+      _.mergeWith(offerToConvert.value, new InvoiceOrOffer());
     }
   }
 
   async function form() {
     loading.value = true;
     clients.value = await useApi().clients().getAll();
+    templates.value = await useApi().templates().getAll();
     const id = useRoute().params["id"] as string;
 
     if (id === "new") {
       const count = await useApi().invoicesOrOffers(singularType()).count();
-      Object.assign(invoiceOrOffer.value, new InvoiceOrOffer());
-      invoiceOrOffer.value.number = useSettings().settings.numberFormat(
-        type(),
-        count,
-      );
+      _.mergeWith(invoiceOrOffer.value, new InvoiceOrOffer());
+      invoiceOrOffer.value.number = useSettings().settings.numberFormat(type(), count);
       title.value = invoiceOrOffer.value.number;
 
-      invoiceOrOffer.value.data.dueDate = dateFns.add(
-        invoiceOrOffer.value.data.date,
-        {
-          days: useProfile().me.organization.settings.invoices.dueDays,
-        },
-      );
+      invoiceOrOffer.value.data.dueDate = dateFns.add(invoiceOrOffer.value.data.date, {
+        days: useProfile().me.organization.settings.invoices.dueDays,
+      });
       invoiceOrOffer.value.data.dueDays = dateFns.differenceInCalendarDays(
         invoiceOrOffer.value.data.dueDate,
         invoiceOrOffer.value.data.date,
       );
       await maybeDoConvertOffer();
     } else {
-      Object.assign(
-        invoiceOrOffer.value,
-        await useApi().invoicesOrOffers(singularType()).get(id),
-      );
-      title.value = `Edit: ${invoiceOrOffer.value.number}`;
+      _.mergeWith(invoiceOrOffer.value, await useApi().invoicesOrOffers(singularType()).get(id));
+      title.value = invoiceOrOffer.value.number;
     }
     invoiceOrOffer.value.recalc();
     if (!invoiceOrOffer.value.data.taxOption) {
-      invoiceOrOffer.value.data.taxOption =
-        useSettings().settings.taxes.options.filter((o) => o.default)[0];
+      invoiceOrOffer.value.data.taxOption = useSettings().settings.taxes.options.filter((o) => o.default)[0];
     }
     mustSave.value = -1;
     loading.value = false;
   }
 
   async function del() {
-    await useApi()
-      .invoicesOrOffers("invoice-or-offer")
-      .delete(invoiceOrOffer.value.id);
+    await useApi().invoicesOrOffers("invoice-or-offer").delete(invoiceOrOffer.value.id);
     useRouter().replace(`/${type()}/`);
   }
   return {
@@ -203,6 +182,7 @@ export default defineStore("invoiceOrOffer", () => {
     invoicesOrOffers,
     hasErrors,
     clients,
+    templates,
     mustSave,
     offerToConvert,
     del,
@@ -211,12 +191,14 @@ export default defineStore("invoiceOrOffer", () => {
     type,
     singularType,
     list,
+    setTemplate,
     setClient,
     preview,
     download,
     updated,
     setStatus,
     offerToInvoice,
+    duplicate,
   };
 });
 // some test

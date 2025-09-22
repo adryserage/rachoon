@@ -1,8 +1,9 @@
 import { Client } from "~~/models/client";
+import _ from "lodash";
 
 export default defineStore("client", () => {
   const type = "clients";
-  let clients = ref([]);
+  let clients = ref<Client[]>([]);
 
   const hasErrors = ref(false);
 
@@ -40,17 +41,11 @@ export default defineStore("client", () => {
     if (id === "new") {
       const count = (await useApi().clients().count()) + 1;
       client.value = new Client();
-      client.value.number = useSettings().settings.numberFormat(
-        "clients",
-        count,
-      );
+      client.value.number = useSettings().settings.numberFormat("clients", count);
       title.value = client.value.number;
     } else {
-      client.value = Object.assign(
-        client.value,
-        await useApi().clients().get(id),
-      );
-      title.value = "Edit: " + client.value.number;
+      client.value = _.mergeWith(client.value, await useApi().clients().get(id));
+      title.value = client.value.number;
     }
 
     loading.value = false;

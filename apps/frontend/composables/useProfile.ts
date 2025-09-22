@@ -1,4 +1,5 @@
 import { User } from "~~/models/user";
+import _ from "lodash";
 
 export default defineStore("profile", () => {
   let me = ref(new User());
@@ -9,7 +10,8 @@ export default defineStore("profile", () => {
     loading.value = true;
     try {
       if (useAuth().key() && me.value.id === null) {
-        Object.assign(me.value, await useApi().profile().get());
+        me.value = _.mergeWith(me.value, await useApi().profile().get());
+        useTemplate().getDefault();
       }
     } catch (e) {
       console.error("useProfile", e);
@@ -22,12 +24,12 @@ export default defineStore("profile", () => {
     useApi().profile().save(me.value);
   }
 
-  async function selectFile(e) {
+  async function selectFile(e: any) {
     const file = e.target.files[0];
 
     /* Make sure file exists */
     if (!file) return;
-    const readData = (f): Promise<any> =>
+    const readData = (f: any): Promise<any> =>
       new Promise((resolve) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result);

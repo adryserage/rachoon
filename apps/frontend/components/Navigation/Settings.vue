@@ -36,9 +36,23 @@
             </NuxtLink>
           </li>
           <li>
-            <NuxtLink href="/settings/numbering" :class="useRoute().fullPath.includes('/formats') ? 'active' : ''">
-              <FaIcon icon="fa-solid fa-list-ol" />
-              Numbering
+            <NuxtLink href="/settings/clients" :class="useRoute().fullPath.includes('/formats') ? 'active' : ''">
+              <FaIcon icon="fa-solid fa-user" />
+              Clients
+            </NuxtLink>
+          </li>
+
+          <li>
+            <NuxtLink href="/settings/offers" :class="useRoute().fullPath.includes('/formats') ? 'active' : ''">
+              <FaIcon icon="fa-solid fa-file-invoice" />
+              Offers
+            </NuxtLink>
+          </li>
+
+          <li>
+            <NuxtLink href="/settings/invoices" :class="useRoute().fullPath.includes('/formats') ? 'active' : ''">
+              <FaIcon icon="fa-solid fa-file-invoice-dollar" />
+              Invoices
             </NuxtLink>
           </li>
         </ul>

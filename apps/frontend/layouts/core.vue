@@ -1,42 +1,40 @@
 <template>
   <div>
     <div class="flex">
-      <div class="w-1/5 bg-base-100 min-h-dvh p-5 border-r-base-300 border-r">
-        <div class="text-center">
-          <NuxtLink href="/" class="logo">
-            <img
-              v-if="useProfile().me.organization.data.logo !== ''"
-              :src="useProfile().me.organization.data.logo"
-              class="h-8 w-auto inline-block"
-            />
-            <div class="divider"></div>
+      <div class="w-1/5 bg-base-100 min-h-dvh p-5 border-r-base-300 border-r flex flex-col">
+        <NuxtLink href="/" class="logo">
+          <img
+            v-if="useProfile().me.organization.data.logo !== ''"
+            :src="useProfile().me.organization.data.logo"
+            class="h-8 w-auto inline-block"
+          />
+          <div class="divider m-0"></div>
+        </NuxtLink>
+        <NavigationMain />
+        <div class="divider m-0"></div>
+        <NavigationSettings />
+        <div class="divider m-0"></div>
+        <NavigationTemplates />
+        <div class="divider m-0"></div>
+        <div class="flex-grow"></div>
 
-            <!-- <img -->
-            <!--   src="@/assets/logo.png" -->
-            <!--   class="h-12 w-auto inline-block align-middle" -->
-            <!-- /> -->
-            <!-- <h2 class="ml-2 inline-block align-middle">rachoon</h2> -->
-          </NuxtLink>
-          <NavigationMain />
-          <div class="divider m-0"></div>
-          <NavigationSettings />
-          <div class="divider m-0"></div>
-          <NuxtLink href="/profile">
-            <div class="flex gap-3 justify-between">
-              <div class="">
-                <span class="text-sm">Profile settings</span>
-              </div>
-              <div class="avatar placeholder">
-                <div class="bg-success text-black rounded-full w-10">
-                  <img
-                    v-if="useProfile().me.data.avatar !== ''"
-                    :src="useProfile().me.data.avatar"
-                  />
-                  <span v-else>{{ useProfile().me.initials() }}</span>
-                </div>
+        <NuxtLink href="/profile">
+          <div class="flex gap-3 justify-between">
+            <div class="">
+              <span class="text-sm">Profile settings</span>
+            </div>
+            <div class="avatar placeholder">
+              <div class="bg-success text-black rounded-full w-10">
+                <img v-if="useProfile().me.data.avatar !== ''" :src="useProfile().me.data.avatar" />
+                <span v-else>{{ useProfile().me.initials() }}</span>
               </div>
             </div>
-          </NuxtLink>
+          </div>
+        </NuxtLink>
+        <div class="divider"></div>
+        <div class="text-center opacity-30">
+          <img src="@/assets/logo.png" class="h-12 w-auto inline-block" />
+          <div class="text-xs mt-2">Rachoon Version {{ useRuntimeConfig().public.appVersion }}</div>
         </div>
       </div>
       <div class="w-4/5 min-h-dvh"><slot /></div>
@@ -106,12 +104,3 @@
   <!--   </div> -->
   <!-- </div> -->
 </template>
-
-<style scoped>
-.menu .router-link-active,
-.menu .active,
-.menu a:focus,
-.menu a:hover {
-  @apply text-base-content bg-base-300;
-}
-</style>

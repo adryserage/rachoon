@@ -1,10 +1,20 @@
 import { compose } from '@ioc:Adonis/Core/Helpers'
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import {
+  BaseModel,
+  BelongsTo,
+  belongsTo,
+  column,
+  HasMany,
+  hasMany,
+  hasOne,
+  HasOne,
+} from '@ioc:Adonis/Lucid/Orm'
 import Client from './Client'
 import Organization from './Organization'
 import HashIDs from 'App/Helpers/hashids'
 import { SoftDeletes } from '@ioc:Adonis/Addons/LucidSoftDeletes'
+import Template from './Template'
 
 export default class InvoiceOrOffer extends compose(BaseModel, SoftDeletes) {
   @column({ isPrimary: true, serialize: (val) => HashIDs.encode(val) })
@@ -37,8 +47,14 @@ export default class InvoiceOrOffer extends compose(BaseModel, SoftDeletes) {
   @column({ serialize: (val) => HashIDs.encode(val) })
   public organizationId: number
 
+  @column({ serialize: (val) => HashIDs.encode(val) })
+  public templateId: number
+
   @belongsTo(() => Organization)
   public organization: BelongsTo<typeof Organization>
+
+  @hasOne(() => Template)
+  public template: HasOne<typeof Template>
 
   @column()
   public offerId: number

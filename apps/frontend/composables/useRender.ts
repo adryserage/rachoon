@@ -1,21 +1,22 @@
 import nunjucks from "nunjucks";
 import ioTemplates from "@/templates/invoiceOrOffer";
 
-export default async function useRender(
-  object: any,
-  preview: boolean = false,
-  type: string = "invoiceOrOffer",
-): Promise<string | string[]> {
+export default async function useRender(object: any, preview: boolean = false): Promise<string | string[]> {
   const t = (key: string, ...val: any): string => {
     return useLocale.t(key, val);
   };
 
-  const html =
-    type === "invoiceOrOffer"
-      ? useSettings().settings.style.template || ioTemplates.default
-      : ttTemplate.default;
-  const final = await nunjucks.renderString(html, {
+  let tpl = "default";
+
+  if (object.templateId) {
+    tpl = object.templateId;
+  }
+
+  const template = await useTemplate().get(tpl);
+  const html = template.html || ioTemplates.default;
+  const final = nunjucks.renderString(html, {
     object: object,
+    template: template,
     organization: useProfile().me.organization,
     user: useProfile().me,
     t: t,

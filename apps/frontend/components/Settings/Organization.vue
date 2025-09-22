@@ -1,16 +1,13 @@
 <template>
   <div>
-    <FormSection
-      title="Organization"
-      icon="fa-solid fa-building"
-      description="Organization name and VAT number"
-    >
+    <FormSection title="Organization" icon="fa-solid fa-building" description="Organization name and VAT number">
       <div class="flex gap-5">
         <div class="w-1/2">
           <label class="label w-full max-w-xs">
-            <span class="label-text"
-              >Organization name <span class="text-red-700">*</span></span
-            >
+            <span class="label-text">
+              Organization name
+              <span class="text-red-700">*</span>
+            </span>
           </label>
           <input
             type="text"
@@ -63,18 +60,15 @@
         </div>
       </div>
     </FormSection>
-    <FormSection
-      title="Address"
-      icon="fa-solid fa-address-book"
-      description="Contact Information"
-    >
+    <FormSection title="Address" icon="fa-solid fa-address-book" description="Contact Information">
       <div>
         <div class="grid grid-cols-2 gap-5">
           <div>
             <label class="label w-full max-w-xs">
-              <span class="label-text"
-                >Street <span class="text-red-700">*</span></span
-              >
+              <span class="label-text">
+                Street
+                <span class="text-red-700">*</span>
+              </span>
             </label>
             <input
               type="text"
@@ -86,9 +80,10 @@
           </div>
           <div>
             <label class="label w-full max-w-xs">
-              <span class="label-text"
-                >ZIP <span class="text-red-700">*</span></span
-              >
+              <span class="label-text">
+                ZIP
+                <span class="text-red-700">*</span>
+              </span>
             </label>
             <input
               type="text"
@@ -100,9 +95,10 @@
           </div>
           <div>
             <label class="label w-full max-w-xs">
-              <span class="label-text"
-                >City <span class="text-red-700">*</span></span
-              >
+              <span class="label-text">
+                City
+                <span class="text-red-700">*</span>
+              </span>
             </label>
             <input
               type="text"
@@ -114,9 +110,10 @@
           </div>
           <div>
             <label class="label w-full max-w-xs">
-              <span class="label-text"
-                >Country <span class="text-red-700">*</span></span
-              >
+              <span class="label-text">
+                Country
+                <span class="text-red-700">*</span>
+              </span>
             </label>
             <select
               class="select select-bordered select-sm bg-base-300 w-full max-w-xs"
@@ -130,27 +127,5 @@
         </div>
       </div>
     </FormSection>
-
-    <div></div>
-
-    <div class="divider"></div>
-    <div class="prose">
-      <h2>Columns</h2>
-      <p>Custom text you can use in your PDFs</p>
-    </div>
-    <div class="grid grid-cols-3 gap-5">
-      <div class="prose">
-        <h3>First column</h3>
-        <Editor v-model="useProfile().me.organization.data.columns.first" />
-      </div>
-      <div class="prose">
-        <h3>Second column</h3>
-        <Editor v-model="useProfile().me.organization.data.columns.second" />
-      </div>
-      <div class="prose">
-        <h3>Third column</h3>
-        <Editor v-model="useProfile().me.organization.data.columns.third" />
-      </div>
-    </div>
   </div>
 </template>

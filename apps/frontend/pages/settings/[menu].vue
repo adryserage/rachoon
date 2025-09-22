@@ -3,7 +3,7 @@ definePageMeta({
   layout: "core",
 });
 const route = useRoute();
-const slot = route.params.slot as string;
+const menu = route.params.menu as string;
 
 function save(e: any) {
   e.preventDefault();
@@ -23,10 +23,12 @@ function save(e: any) {
       >
     </FormHeader>
     <div class="flex gap-2"></div>
-    <SettingsOrganization v-if="slot === 'organization'" />
-    <SettingsLocale v-if="slot === 'locale'" />
-    <SettingsTaxes v-if="slot === 'taxes'" />
-    <SettingsUnits v-if="slot === 'units'" />
-    <SettingsNumbering v-if="slot === 'numbering'" />
+    <SettingsOrganization v-if="menu === 'organization'" />
+    <SettingsLocale v-if="menu === 'locale'" />
+    <SettingsTaxes v-if="menu === 'taxes'" />
+    <SettingsUnits v-if="menu === 'units'" />
+    <SettingsInvoices v-if="menu === 'invoices'" />
+    <SettingsOffers v-if="menu === 'offers'" />
+    <SettingsClients v-if="menu === 'clients'" />
   </form>
 </template>

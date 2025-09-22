@@ -1,29 +1,36 @@
 <template>
-	<div class="prose mt-5">
-		<h2>Offers</h2>
-	</div>
-	<div class="divider opacity-50"></div>
-	<div class="grid grid-cols-2 gap-5">
-		<div>
-			<SettingsFormat entity="offers" />
-			<div class="divider"></div>
-			<div>
-				<label class="label w-full max-w-xs">
-					<span class="label-text">Valid for</span>
-				</label>
-				<label class="input-group">
-					<input
-						type="text"
-						v-maska="'#*'"
-						placeholder="10"
-						v-model="useSettings().settings.offers.dueDays"
-						required
-						class="input input-bordered input-sm w-full max-w-xs" />
-					<span class="text-sm text-info">days</span>
-				</label>
-			</div>
-		</div>
+  <FormSection title="Numbering" description="Set the number format for your offers.">
+    <SettingsFormat entity="offers" />
+  </FormSection>
+  <FormSection title="Defaults" description="Set default values for your offers.">
+    <div>
+      <label class="label w-full max-w-xs">
+        <span class="label-text">Title</span>
+      </label>
+      <input
+        type="text"
+        placeholder="Offer"
+        v-model="useSettings().settings.offers.title"
+        required
+        class="input input-bordered input-sm w-full max-w-xs"
+      />
+    </div>
 
-		<Preview example="offer" />
-	</div>
+    <div>
+      <label class="label w-full max-w-xs">
+        <span class="label-text">Due in</span>
+      </label>
+      <label class="input-group">
+        <input
+          type="text"
+          placeholder="10"
+          v-maska="'#*'"
+          v-model="useSettings().settings.offers.dueDays"
+          required
+          class="input input-bordered input-sm w-full max-w-xs"
+        />
+        <span class="text-sm text-info">days</span>
+      </label>
+    </div>
+  </FormSection>
 </template>

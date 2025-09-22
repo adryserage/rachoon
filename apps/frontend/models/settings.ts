@@ -72,6 +72,7 @@ class Settings implements SettingsData {
     template: "",
   };
   invoices = {
+    title: "Invoice",
     number: {
       format: "INV-{number}{date:yyMMdd}",
       start: 0,
@@ -80,6 +81,7 @@ class Settings implements SettingsData {
     dueDays: 30,
   };
   offers = {
+    title: "Offer",
     number: {
       format: "OFF-{number}{date:yyMMdd}",
       start: 0,
@@ -151,10 +153,7 @@ class Settings implements SettingsData {
     this.taxes.options.push({ title: "", default: false, applicable: true });
   }
   public numberFormat(entity: string, add: number = 0) {
-    const number = String(Number(this[entity].number.start) + add).padStart(
-      this[entity].number.padZeros,
-      "0"
-    );
+    const number = String(Number(this[entity].number.start) + add).padStart(this[entity].number.padZeros, "0");
 
     let final = this[entity].number.format.replaceAll("{number}", number);
     const d = final.match(/\{date:[a-zA-Z_\-\.]+\}/);

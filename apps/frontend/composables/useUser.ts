@@ -1,8 +1,9 @@
 import { User } from "~~/models/user";
+import _ from "lodash";
 
 export default defineStore("user", () => {
   const type = "users";
-  let users = ref([]);
+  let users = ref<User[]>([]);
   const user = ref(new User());
   const title = ref();
   const password = ref(null);
@@ -18,10 +19,7 @@ export default defineStore("user", () => {
     if (password.value !== passwordRepeat.value) return;
     const u = await useApi()
       .users()
-      .saveOrUpdate(
-        isNew ? { ...user.value, password: password.value } : user.value,
-        !isNew,
-      );
+      .saveOrUpdate(isNew ? { ...user.value, password: password.value } : user.value, !isNew);
     if (isNew) {
       useRouter().replace(`/${type}/${u.id}`);
     }
@@ -41,7 +39,7 @@ export default defineStore("user", () => {
       user.value = new User();
       title.value = "New user";
     } else {
-      user.value = Object.assign(user.value, await useApi().users().get(id));
+      user.value = _.mergeWith(user.value, await useApi().users().get(id));
       title.value = user.value.data.fullName;
     }
 

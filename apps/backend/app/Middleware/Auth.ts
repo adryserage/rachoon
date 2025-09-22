@@ -71,6 +71,7 @@ export default class AuthMiddleware {
      */
     const guards = customGuards.length ? customGuards : [auth.name]
     await this.authenticate(auth, guards)
+    await auth.use('api').authenticate()
     await auth.user!.load('organization')
     await next()
   }

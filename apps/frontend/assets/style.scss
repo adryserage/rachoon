@@ -31,7 +31,7 @@ body {
 }
 
 *:focus {
-  outline: 0px !important;
+  outline: 0px #{!important};
 }
 
 input:focus,
@@ -222,7 +222,7 @@ input::placeholder {
 .page-enter,
 .page-leave-to {
   opacity: 0;
-  filter: blur(1rem);
+  /* filter: blur(1rem); */
 }
 
 :root {
@@ -262,4 +262,10 @@ input::placeholder {
   --dp-icon-color: #ffffff;
   --dp-danger-color: hsl(var(--er));
   --dp-highlight-color: hsl(var(--p));
+}
+
+.menu .router-link-exact-active,
+.menu a:focus,
+.menu a:hover {
+  @apply text-base-content bg-base-300 #{!important};
 }

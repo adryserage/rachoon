@@ -5,11 +5,11 @@
       <p>{{ $props.description }}</p>
       <slot name="extra" />
     </div>
-    <div class="w-3/5 bg-base-300 rounded-md p-5">
+    <div class="w-3/5 bg-base-300 rounded-md p-5 shadow-md">
       <slot />
     </div>
   </div>
-  <div class="divider mt-0 px-10" v-if="$props.divider"></div>
+  <div class="divider m-0" v-if="$props.divider"></div>
 </template>
 
 <script setup lang="ts">

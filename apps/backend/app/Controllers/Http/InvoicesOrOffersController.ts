@@ -4,6 +4,9 @@ import { InvoiceOrOfferValidator } from '../../Validators/InvoiceOrOffer'
 
 export default class InvoicesOrOffersController {
   public async index(ctx: HttpContextContract) {
+    if (!['invoice', 'offer'].includes(ctx.request.qs()['type'])) {
+      return ctx.response.badRequest('Type must be invoice or offer')
+    }
     if (ctx.request.qs()['count']) {
       return await InvoiceOrOffer.query()
         .where({

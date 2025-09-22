@@ -6,6 +6,7 @@ class InvoiceOrOfferValidator {
     number: schema.string(),
     status: schema.string(),
     offerId: schema.number.optional(),
+    templateId: schema.number.optional(),
     data: schema.object().members({
       positions: schema.array().members(schema.object().anyMembers()),
       discountsCharges: schema.array.optional().members(schema.object().anyMembers()),

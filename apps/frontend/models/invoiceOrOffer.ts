@@ -43,10 +43,12 @@ export type InvoiceOrOfferType = {
   clientId: string;
   number: string;
   status: string;
-  offerId: string;
+  offerId: string | null;
+  templateId: string | null;
   offer: InvoiceOrOfferType;
   invoices: InvoiceOrOfferType[];
   data: {
+    title: string;
     positions: Position[];
     discountsCharges: DiscountCharge[];
     taxes: { [rate: number]: number };
@@ -72,10 +74,12 @@ class InvoiceOrOffer implements InvoiceOrOfferType {
   client: ClientType;
   number: string = "";
   status: string = "pending";
-  offerId: string = null;
+  offerId = null;
+  templateId = "";
   offer: InvoiceOrOfferType;
   invoices: InvoiceOrOfferType[];
   data = {
+    title: "",
     positions: [] as Position[],
     discountsCharges: [] as DiscountCharge[],
     taxes: {},
@@ -119,10 +123,7 @@ class InvoiceOrOffer implements InvoiceOrOfferType {
   }
 
   public recalc() {
-    this.data.dueDays = dateFns.differenceInCalendarDays(
-      this.data.dueDate,
-      this.data.date,
-    );
+    this.data.dueDays = dateFns.differenceInCalendarDays(this.data.dueDate, this.data.date);
     if (this.data.positions.length === 0) {
       this.addPosition();
     }
@@ -144,13 +145,11 @@ class InvoiceOrOffer implements InvoiceOrOfferType {
     return e;
   }
 
-  public disabled = () => this.offerId !== null && this.offerId !== "";
+  public convertedFromOffer = () => this.offerId !== null && this.offerId !== "";
+  public disabled = () => this.convertedFromOffer();
 
   protected calcPositions() {
-    let sumPositions = this.data.positions.reduce(
-      (p, c) => (p += c.quantity * c.price),
-      0,
-    );
+    let sumPositions = this.data.positions.reduce((p, c) => (p += c.quantity * c.price), 0);
     let sumPositionsNoDiscount = 0;
     this.data.positions.map((p) => {
       p.net = p.quantity * p.price;
@@ -176,8 +175,7 @@ class InvoiceOrOffer implements InvoiceOrOfferType {
     let sumDiscountsCharges = 0;
 
     this.data.discountsCharges.forEach((dc) => {
-      const v =
-        dc.valueType === "percent" ? (sumPositions / 100) * dc.value : dc.value;
+      const v = dc.valueType === "percent" ? (sumPositions / 100) * dc.value : dc.value;
 
       dc.amount = v;
       if (dc.title != "" && dc.value > 0) {

@@ -1,0 +1,40 @@
+<script setup lang="ts">
+import type { Template } from "~/models/template";
+
+useTemplate().list();
+
+const isDefault = (t: Template) => {
+  const orgHasDefaultTemplate = useTemplate().templates.filter((t) => !t.isGlobal && t.default).length > 0;
+  return (t.isGlobal && t.default && !orgHasDefaultTemplate) || (!t.isGlobal && t.default);
+};
+</script>
+
+<template>
+  <Loading v-if="useTemplate().loading" />
+  <div v-else>
+    <FormHeader title="Templates" icon="fa-palette" :divider="false">
+      <template #buttons>
+        <NuxtLink class="btn btn-sm btn-neutral gap-2 no-underline" href="/templates/new">
+          <FaIcon icon="fa-solid fa-plus-circle " />
+          New template
+        </NuxtLink>
+      </template>
+    </FormHeader>
+    <div class="grid grid-cols-7 gap-3 px-10">
+      <div
+        :class="`${isDefault(t) ? 'bg-base-300' : 'bg-base-100'} shadow-lg min-h-60 py-5 rounded-md shadow-lg`"
+        v-for="t in useTemplate().templates"
+        :key="t.id"
+      >
+        <NuxtLink :to="`/templates/${t.id}`">
+          <div class="text-center">
+            <div><img :src="t.thumbnail" class="w-32 inline-block rounded-md" /></div>
+            <div class="text-xs mt-2">
+              {{ t.title }}
+            </div>
+          </div>
+        </NuxtLink>
+      </div>
+    </div>
+  </div>
+</template>

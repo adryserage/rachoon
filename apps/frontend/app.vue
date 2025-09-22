@@ -13,11 +13,7 @@ window.addEventListener("keyup", (e) => {
 <template>
   <div v-if="useProfile().loading === true">Loading</div>
   <div id="app" data-theme="rachoon" v-else>
-    <notifications
-      position="top center"
-      classes="alert alert-primary mt-2 notification"
-      width="500px"
-    />
+    <notifications position="bottom right" classes="alert mb-5 mr-5 notification" width="500px" />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
