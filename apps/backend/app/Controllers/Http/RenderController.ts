@@ -9,13 +9,14 @@ import nunjucks from 'nunjucks'
 export default class RenderController {
   public async store(ctx: HttpContextContract) {
     const body: any = await ctx.request.validate(RenderValidator)
+    const org = ctx.auth.user!.organization
     const template = await Template.query()
-      .where({ id: body.templateId, organizationId: ctx.auth.user?.organizationId })
+      .where({ id: body.templateId, organizationId: org.id })
       .orWhere({ id: body.templateId, organizationId: null })
       .firstOrFail()
 
-    const loc = ctx.auth.user!.organization.settings.general.locale
-    const cur = ctx.auth.user!.organization.settings.general.currency
+    const loc = org.settings.general.locale
+    const cur = org.settings.general.currency
 
     const t = (key: string, ...val: any): string => {
       return Locale.t(loc, key, val)
@@ -30,7 +31,7 @@ export default class RenderController {
     const finalHtml = nunjucks.renderString(template.html, {
       object: body.data,
       template: template,
-      organization: ctx.auth.user!.organization,
+      organization: org,
       user: ctx.auth.user!,
       t: t,
       format: {
