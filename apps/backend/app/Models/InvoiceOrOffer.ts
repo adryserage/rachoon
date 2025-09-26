@@ -1,7 +1,9 @@
 import { compose } from '@ioc:Adonis/Core/Helpers'
 import { DateTime } from 'luxon'
+import { InvoiceOrOffer as CommonInvoiceOrOffer } from '@repo/common/InvoiceOrOffer'
 import {
   BaseModel,
+  beforeSave,
   BelongsTo,
   belongsTo,
   column,
@@ -17,6 +19,12 @@ import { SoftDeletes } from '@ioc:Adonis/Addons/LucidSoftDeletes'
 import Template from './Template'
 
 export default class InvoiceOrOffer extends compose(BaseModel, SoftDeletes) {
+  @beforeSave()
+  public static async calculate(invoiceOrOffer: InvoiceOrOffer) {
+    const common = new CommonInvoiceOrOffer(invoiceOrOffer.serialize())
+    common.calcAll()
+    invoiceOrOffer.data = common.data
+  }
   @column({ isPrimary: true, serialize: (val) => HashIDs.encode(val) })
   public id: number
 

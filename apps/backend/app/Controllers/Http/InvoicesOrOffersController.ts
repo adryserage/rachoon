@@ -36,9 +36,12 @@ export default class InvoicesOrOffersController {
   }
 
   public async update(ctx: HttpContextContract) {
-    return await InvoiceOrOffer.query()
+    const io = await InvoiceOrOffer.query()
       .where({ id: ctx.request.param('id'), organizationId: ctx.auth.user?.organizationId })
-      .update(await ctx.request.validate(InvoiceOrOfferValidator))
+      .firstOrFail()
+    io.merge(await ctx.request.validate(InvoiceOrOfferValidator))
+    await io.save()
+    return io
   }
 
   public async destroy(ctx: HttpContextContract) {

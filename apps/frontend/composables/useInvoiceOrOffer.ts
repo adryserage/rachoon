@@ -45,7 +45,7 @@ export default defineStore("invoiceOrOffer", () => {
     if (invoiceOrOffer.value.data.positions[0].price === null && invoiceOrOffer.value.data.positions[0].quantity === null) {
       invoiceOrOffer.value.removePosition(0);
     }
-    invoiceOrOffer.value.recalc();
+    invoiceOrOffer.value.rebuild();
   }
 
   function offerToInvoice(io: InvoiceOrOffer) {}
@@ -90,7 +90,7 @@ export default defineStore("invoiceOrOffer", () => {
   }
 
   function updated() {
-    invoiceOrOffer.value.recalc();
+    invoiceOrOffer.value.rebuild();
     mustSave.value++;
   }
 
@@ -105,7 +105,7 @@ export default defineStore("invoiceOrOffer", () => {
           .get(useRoute().query.offer as string),
       );
       invoiceOrOffer.value.removePositions();
-      offerToConvert.value.recalc();
+      offerToConvert.value.rebuild();
       invoiceOrOffer.value.client = offerToConvert.value.client;
       invoiceOrOffer.value.clientId = offerToConvert.value.clientId;
       invoiceOrOffer.value.offerId = offerToConvert.value.id;
@@ -133,7 +133,7 @@ export default defineStore("invoiceOrOffer", () => {
         });
       }
       invoiceOrOffer.value.invoices = offerToConvert.value.invoices;
-      invoiceOrOffer.value.recalc();
+      invoiceOrOffer.value.rebuild();
     } else {
       _.mergeWith(offerToConvert.value, new InvoiceOrOffer());
     }
@@ -144,8 +144,10 @@ export default defineStore("invoiceOrOffer", () => {
     clients.value = await useApi().clients().getAll();
     templates.value = await useApi().templates().getAll();
     const id = useRoute().params["id"] as string;
+    console.log("id");
 
     if (id === "new") {
+      console.log("NEW");
       const count = await useApi().invoicesOrOffers(singularType()).count();
       _.mergeWith(invoiceOrOffer.value, new InvoiceOrOffer());
       invoiceOrOffer.value.number = useSettings().settings.numberFormat(type(), count);
@@ -163,7 +165,7 @@ export default defineStore("invoiceOrOffer", () => {
       _.mergeWith(invoiceOrOffer.value, await useApi().invoicesOrOffers(singularType()).get(id));
       title.value = invoiceOrOffer.value.number;
     }
-    invoiceOrOffer.value.recalc();
+    invoiceOrOffer.value.rebuild();
     if (!invoiceOrOffer.value.data.taxOption) {
       invoiceOrOffer.value.data.taxOption = useSettings().settings.taxes.options.filter((o) => o.default)[0];
     }
