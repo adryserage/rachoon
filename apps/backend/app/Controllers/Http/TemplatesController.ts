@@ -1,6 +1,8 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Template from 'App/Models/Template'
+import Renderer from 'App/Services/Renderer'
 import TemplateValidator from 'App/Validators/Template'
+import Example from '@repo/common/Example'
 
 export default class TemplatessController {
   private async removeDefault(ctx: HttpContextContract, id: number) {
@@ -8,6 +10,12 @@ export default class TemplatessController {
       .where({ organizationId: ctx.auth.user?.organizationId })
       .andWhereNot({ id: id })
       .update({ default: false })
+  }
+
+  private async generateThumbnail(ctx: HttpContextContract, template: Template): Promise<string> {
+    const html = Renderer.prepareHtml(ctx.auth.user!, template, Example.invoice)
+    const res = await Renderer.generatePDFOrImage(html, true, 10)
+    return res[0]
   }
 
   public async index(ctx: HttpContextContract) {
@@ -24,6 +32,8 @@ export default class TemplatessController {
       ...body,
       organizationId: ctx.auth.user?.organizationId,
     })
+    created.thumbnail = await this.generateThumbnail(ctx, created)
+    await created.save()
     if (body.default) {
       await this.removeDefault(ctx, created.id)
     }
@@ -43,20 +53,18 @@ export default class TemplatessController {
 
   public async update(ctx: HttpContextContract) {
     const body = await ctx.request.validate(TemplateValidator)
-    await Template.query()
-      .where({ id: ctx.request.param('id'), organizationId: ctx.auth.user?.organizationId })
-      .update({
-        ...body,
-      })
-
-    const updated = await Template.query()
+    const template = await Template.query()
       .where({ id: ctx.request.param('id'), organizationId: ctx.auth.user?.organizationId })
       .firstOrFail()
 
-    if (body.default) {
-      await this.removeDefault(ctx, updated.id)
+    template.merge(body)
+    template.thumbnail = await this.generateThumbnail(ctx, template)
+
+    await template.save()
+    if (template.default) {
+      await this.removeDefault(ctx, template.id)
     }
-    return updated
+    return template
   }
 
   public async show(ctx: HttpContextContract) {
