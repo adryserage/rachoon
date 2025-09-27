@@ -12,7 +12,7 @@ const isDefault = (t: Template) => {
 <template>
   <Loading v-if="useTemplate().loading" />
   <div v-else>
-    <FormHeader title="Templates" icon="fa-palette" :divider="false">
+    <FormHeader title="Templates" icon="fa-palette">
       <template #buttons>
         <NuxtLink class="btn btn-sm btn-neutral gap-2 no-underline" href="/templates/new">
           <FaIcon icon="fa-solid fa-plus-circle " />
@@ -20,7 +20,7 @@ const isDefault = (t: Template) => {
         </NuxtLink>
       </template>
     </FormHeader>
-    <div class="grid grid-cols-7 gap-3 px-10">
+    <div class="grid grid-cols-7 gap-3 px-10 mt-5">
       <div
         :class="`${isDefault(t) ? 'bg-base-300' : 'bg-base-100'} shadow-lg min-h-60 py-5 rounded-md shadow-lg`"
         v-for="t in useTemplate().templates"

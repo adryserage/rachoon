@@ -3,7 +3,7 @@ import _ from "lodash";
 
 export default defineStore("client", () => {
   const type = "clients";
-  let clients = ref<Client[]>([]);
+  const clients = ref<Client[]>([]);
   const page = ref(1);
   const perPage = ref(5);
 
@@ -16,6 +16,7 @@ export default defineStore("client", () => {
   const title = ref();
 
   const loading = ref(false);
+  const loadMoreLoading = ref(false);
   const client = ref(new Client());
 
   async function save(e: Event) {
@@ -32,13 +33,30 @@ export default defineStore("client", () => {
     }
   }
 
-  async function list() {
-    loading.value = true;
+  async function list(loadMore: boolean = false) {
+    if (!loadMore) {
+      page.value = 1;
+      loading.value = true;
+    }
     const res = await useApi().clients().getAll(page.value, perPage.value);
-    console.log(res);
     pages.value = res.pages;
-    clients.value = res.rows;
+    if (loadMore) {
+      clients.value = clients.value.concat(res.rows);
+    } else {
+      clients.value = res.rows;
+    }
     loading.value = false;
+  }
+
+  function loadMore() {
+    if (hasMore()) {
+      page.value++;
+      list(true);
+    }
+  }
+
+  function hasMore() {
+    return page.value < pages.value;
   }
 
   async function form() {
@@ -62,10 +80,13 @@ export default defineStore("client", () => {
     save,
     form,
     loading,
+    loadMoreLoading,
     title,
     clients,
     singularType,
     list,
+    loadMore,
+    hasMore,
     hasErrors,
     pages,
   };

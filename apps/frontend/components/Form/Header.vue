@@ -1,6 +1,6 @@
 <template>
-  <div class="px-10 pt-5 flex gap-5 justify-between prose items-center">
-    <h3 class="flex gap-3 items-center">
+  <div :class="`px-10 py-3 flex gap-5 justify-between items-center prose ${$props.divider ? 'border-b border-base-300' : ''}`">
+    <h3 class="flex gap-3 items-center m-0 p-0">
       <FaIcon :icon="`fa-solid ${$props.icon}`" />
       <span>{{ $props.title }}</span>
     </h3>
@@ -9,7 +9,6 @@
       <slot name="buttons" />
     </div>
   </div>
-  <div class="divider m-0" v-if="$props.divider"></div>
 </template>
 
 <script setup lang="ts">
