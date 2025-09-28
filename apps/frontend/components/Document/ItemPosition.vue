@@ -33,7 +33,7 @@ position.unit = position.unit || units.filter((u) => u.default)[0].title;
               </td>
               <td width="200">
                 <div class="form-control">
-                  <div class="input-group">
+                  <div class="input-group" v-if="document.type !== 'reminder'">
                     <input
                       :disabled="document.disabled()"
                       type="text"
@@ -42,11 +42,7 @@ position.unit = position.unit || units.filter((u) => u.default)[0].title;
                       v-model="position.quantity"
                       class="input input-bordered input-sm w-full"
                     />
-                    <select
-                      class="select select-bordered select-sm bg-base-300"
-                      v-model="position.unit"
-                      :disabled="document.disabled()"
-                    >
+                    <select class="select select-bordered select-sm bg-base-300" v-model="position.unit" :disabled="document.disabled()">
                       <option v-for="u in units" :value="u.title" :key="u.title">
                         {{ u.title }}
                       </option>
@@ -70,7 +66,7 @@ position.unit = position.unit || units.filter((u) => u.default)[0].title;
                 </div>
               </td>
               <td width="120">
-                <div class="form-control">
+                <div class="form-control" v-if="document.type !== 'reminder'">
                   <label class="input-group">
                     <select class="select select-bordered select-sm" v-model="position.tax" :disabled="document.disabled()">
                       <option v-for="r in taxRates" :value="r.rate" :key="r.rate">{{ r.rate }}%</option>
@@ -80,7 +76,7 @@ position.unit = position.unit || units.filter((u) => u.default)[0].title;
                 </div>
               </td>
               <td width="120">
-                <div class="form-control">
+                <div class="form-control" v-if="document.type !== 'reminder'">
                   <label class="input-group">
                     <input
                       type="text"

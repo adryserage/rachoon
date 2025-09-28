@@ -157,7 +157,7 @@ class Document implements DocumentType {
 
   public convertedFromOffer = () =>
     this.offerId !== null && this.offerId !== "";
-  public disabled = () => this.convertedFromOffer();
+  public disabled = () => this.convertedFromOffer() || this.type === "reminder";
 
   protected calcPositions() {
     let sumPositions = this.data.positions.reduce(

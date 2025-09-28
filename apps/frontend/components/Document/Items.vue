@@ -10,10 +10,10 @@ const discountsCharges = document.data.discountsCharges;
       <tr>
         <th width="20" class="bg-info bg-opacity-10 bg-op"></th>
         <th>Position</th>
-        <th width="200">Quantity</th>
+        <th width="200" v-if="document.type !== 'reminder'">Quantity</th>
         <th width="170">Price</th>
-        <th width="120">Tax</th>
-        <th width="120">Discount</th>
+        <th width="120" v-if="document.type !== 'reminder'">Tax</th>
+        <th width="120" v-if="document.type !== 'reminder'">Discount</th>
         <th width="200" class="text-right">Total Net</th>
         <th width="50"></th>
       </tr>

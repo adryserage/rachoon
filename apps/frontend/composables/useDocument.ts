@@ -135,6 +135,7 @@ class DocumentStore extends Base<Document> {
     const id = useRoute().params["id"] as string;
 
     this.item.value = new Document();
+    this.item.value.type = this.singularType();
     if (id === "new") {
       this.item.value.number = await useApi().number(this.singularType()).get();
       this.item.value.data.dueDate = dateFns.add(this.item.value.data.date, {

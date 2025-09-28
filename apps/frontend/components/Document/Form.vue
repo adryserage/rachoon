@@ -53,7 +53,11 @@ async function save() {
           <FaIcon icon="fa-solid fa-copy " />
         </button>
 
-        <NuxtLink :to="`/reminders/new?invoice=${controller().item.id}`" class="btn btn-sm btn-neutral">
+        <NuxtLink
+          :to="`/reminders/new?invoice=${controller().item.id}`"
+          class="btn btn-sm btn-neutral"
+          v-if="controller().item.type === 'invoice' && controller().item.id !== ''"
+        >
           <FaIcon icon="fa-solid fa-bell" />
         </NuxtLink>
 
