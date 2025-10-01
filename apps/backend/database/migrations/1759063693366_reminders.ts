@@ -1,10 +1,10 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'reminders'
+  protected tableName = 'documents'
 
   public async up() {
-    this.schema.alterTable('documents', (table) => {
+    this.schema.alterTable(this.tableName, (table) => {
       table
         .integer('invoice_id')
         .unsigned()
@@ -16,7 +16,7 @@ export default class extends BaseSchema {
   }
 
   public async down() {
-    this.schema.alterTable('documents', (table) => {
+    this.schema.alterTable(this.tableName, (table) => {
       table.dropColumn('invoice_id')
     })
   }

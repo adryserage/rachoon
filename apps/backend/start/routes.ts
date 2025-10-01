@@ -27,6 +27,8 @@ Route.group(() => {
     .only(['store', 'destroy'])
     .middleware({ destroy: ['auth'] })
   Route.group(() => {
+    Route.resource('invoices/recurring', 'RecurringInvoicesController')
+    Route.resource('run/recurring', 'RunRecurringInvoicesController').only(['index'])
     Route.get('documents/duplicate/:id', 'DocumentsController.duplicate')
     Route.resource('number/:type', 'NumbersController').only(['index'])
     Route.resource('documents/status', 'DocumentsStatusController').only(['update'])
@@ -42,5 +44,6 @@ Route.group(() => {
     Route.resource('profile', 'ProfileController').only(['index', 'store'])
     Route.resource('token', 'TokenController').only(['index'])
   }).middleware(['auth'])
+  // TODO: create an internal only middleware, where it checks for a specific header or token
   Route.resource('register', 'RegisterController').only(['store'])
 }).prefix('api')

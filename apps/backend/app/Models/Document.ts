@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { Document as CommonDocument } from '@repo/common/Document'
+import { Document as CommonDocument, DocumentData } from '@repo/common/Document'
 import { isPast } from 'date-fns'
 import {
   beforeSave,
@@ -17,6 +17,7 @@ import Organization from './Organization'
 import HashIDs from 'App/Helpers/hashids'
 import Template from './Template'
 import BaseAppModel from './BaseAppModel'
+import RecurringInvoice from './RecurringInvoice'
 
 export default class Document extends BaseAppModel {
   public serializeExtras() {
@@ -34,9 +35,12 @@ export default class Document extends BaseAppModel {
 
   @beforeSave()
   public static async calculate(document: Document) {
-    const io = new CommonDocument(document.serialize())
-    io.calculate()
-    document.data = io.data
+    const d = new CommonDocument(document.serialize())
+    d.calculate()
+    document.data = d.data as DocumentData
+    if (d.recurringData.startDate) {
+      d.recurringData.startDate.setHours(0, 0, 0, 0)
+    }
   }
   @column({ isPrimary: true, serialize: (val) => HashIDs.encode(val) })
   public id: number
@@ -51,7 +55,13 @@ export default class Document extends BaseAppModel {
   public type: string
 
   @column()
-  public data: any
+  public data: DocumentData
+
+  @column()
+  public recurring: boolean
+
+  @column()
+  public recurringData: any
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -74,6 +84,9 @@ export default class Document extends BaseAppModel {
   @column({ serialize: (val) => HashIDs.encode(val) })
   public invoiceId: number
 
+  @column({ serialize: (val) => HashIDs.encode(val) })
+  public recurringId: number
+
   @belongsTo(() => Organization)
   public organization: BelongsTo<typeof Organization>
 
@@ -86,8 +99,8 @@ export default class Document extends BaseAppModel {
   @belongsTo(() => Document, { foreignKey: 'offerId' })
   public offer: BelongsTo<typeof Document>
 
-  @belongsTo(() => Document, { foreignKey: 'invoiceId' })
-  public invoice: BelongsTo<typeof Document>
+  @hasOne(() => RecurringInvoice, { foreignKey: 'invoiceId' })
+  public recurringInvoice: HasOne<typeof RecurringInvoice>
 
   @hasMany(() => Document, { foreignKey: 'offerId' })
   public invoices: HasMany<typeof Document>

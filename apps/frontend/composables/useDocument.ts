@@ -1,5 +1,6 @@
 import { Client, type ClientType } from "~~/models/client";
 import { Document } from "~~/models/document";
+import Helpers from "@repo/common/Helpers";
 
 import * as dateFns from "date-fns";
 import _ from "lodash";
@@ -39,17 +40,17 @@ class DocumentStore extends Base<Document> {
     this.item.value!.rebuild();
   };
 
-  offerToInvoice = (io: Document) => {};
+  offerToInvoice = (offer: Document) => {};
 
   listForClient = (id: string) => {
     this.filter("clientId", "=", id);
     this.list();
   };
 
-  setStatus = (io: Document) => {
-    const status = io.status === "pending" ? (io.type === "invoice" ? "paid" : "accepted") : "pending";
-    io.setStatus(status);
-    useApi().documents(this.singularType()).setStatus(io.id, status);
+  setStatus = (d: Document) => {
+    const status = d.status === "pending" ? (d.type === "invoice" ? "paid" : "accepted") : "pending";
+    d.setStatus(status);
+    useApi().documents(this.singularType()).setStatus(d.id, status);
   };
 
   list = async () => {
@@ -128,6 +129,20 @@ class DocumentStore extends Base<Document> {
     this.item.value.calculate();
   };
 
+  handleNew = async () => {
+    this.item.value.number = await useApi().number(this.singularType()).get();
+    this.item.value.data.dueDate = dateFns.add(this.item.value.data.date, {
+      days: useProfile().me.organization.settings[this.type()].dueDays,
+    });
+    this.item.value.data.dueDays = dateFns.differenceInCalendarDays(this.item.value.data.dueDate, this.item.value.data.date);
+
+    if (this.type() === "reminders") {
+      this.handleReminder();
+    } else {
+      await this.maybeDoConvertOffer();
+    }
+  };
+
   form = async () => {
     this.loading.value = true;
     this.clients.value = (await useApi().clients().getAll()).rows;
@@ -137,19 +152,9 @@ class DocumentStore extends Base<Document> {
     this.item.value = new Document();
     this.item.value.type = this.singularType();
     if (id === "new") {
-      this.item.value.number = await useApi().number(this.singularType()).get();
-      this.item.value.data.dueDate = dateFns.add(this.item.value.data.date, {
-        days: useProfile().me.organization.settings[this.type()].dueDays,
-      });
-      this.item.value.data.dueDays = dateFns.differenceInCalendarDays(this.item.value.data.dueDate, this.item.value.data.date);
-
-      if (this.type() === "reminders") {
-        this.handleReminder();
-      } else {
-        await this.maybeDoConvertOffer();
-      }
+      this.handleNew();
     } else {
-      this.item.value = _.mergeWith(this.item.value, await useApi().documents(this.singularType()).get(id));
+      this.item.value = Helpers.merge<Document>(this.item.value, await useApi().documents(this.singularType()).get(id));
     }
 
     this.item.value!.rebuild();

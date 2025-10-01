@@ -1,28 +1,30 @@
 import Format from '@repo/common/Format'
 import Client from 'App/Models/Client'
 import Document from 'App/Models/Document'
-import User from 'App/Models/User'
+import Organization from 'App/Models/Organization'
 
 export default class Numberervice {
-  public static async document(user: User, type: string) {
+  public static async document(organizationId: number, type: string) {
     const count = await Document.query()
       .where({
-        organizationId: user?.organizationId,
+        organizationId: organizationId,
         type: type.toLowerCase(),
       })
       .withTrashed()
       .getCount()
 
+    const organization = await Organization.findOrFail(organizationId)
+
     let documentNumber: any
     switch (type) {
       case 'invoice':
-        documentNumber = user.organization.settings.invoices.number
+        documentNumber = organization.settings.invoices.number
         break
       case 'offer':
-        documentNumber = user.organization.settings.offers.number
+        documentNumber = organization.settings.offers.number
         break
       case 'reminder':
-        documentNumber = user.organization.settings.reminders.number
+        documentNumber = organization.settings.reminders.number
         break
       default:
         throw new Error('Type must be invoice, offer or document')
@@ -31,14 +33,16 @@ export default class Numberervice {
     return Format.number(documentNumber, Number(count))
   }
 
-  public static async client(user: User) {
+  public static async client(organizationId: number) {
+    const organization = await Organization.findOrFail(organizationId)
+
     const count = await Client.query()
       .where({
-        organizationId: user?.organizationId,
+        organizationId: organization.id,
       })
       .withTrashed()
       .getCount()
 
-    return Format.number(user.organization.settings.clients.number, Number(count))
+    return Format.number(organization.settings.clients.number, Number(count))
   }
 }

@@ -17,7 +17,8 @@ onMounted(() => {
   );
 });
 
-const modal = ref(false);
+const previewModal = ref(false);
+const recurringModal = ref(false);
 
 definePageMeta({
   layout: "core",
@@ -39,7 +40,12 @@ async function save() {
             {{ u.title }}
           </option>
         </select>
-        <label class="btn btn-sm btn-neutral" for="preview-modal" @click="modal = true">
+        <label class="btn btn-sm btn-neutral" for="recurring-modal" @click="recurringModal = true">
+          <FaIcon icon="fa-solid fa-repeat" />
+          Recurring
+        </label>
+
+        <label class="btn btn-sm btn-neutral" for="preview-modal" @click="previewModal = true">
           <FaIcon icon="fa-solid fa-eye" />
         </label>
         <button
@@ -52,6 +58,8 @@ async function save() {
         <button class="btn btn-sm btn-neutral" @click="controller().duplicate(controller().item.id)">
           <FaIcon icon="fa-solid fa-copy " />
         </button>
+
+        <span class="btn btn-sm btn-neutral cursor-pointer"><FaIcon icon="fa-solid fa-gear" /></span>
 
         <NuxtLink
           :to="`/reminders/new?invoice=${controller().item.id}`"
@@ -72,11 +80,20 @@ async function save() {
         </button>
       </template>
     </FormHeader>
-    <div v-if="modal">
+    <div v-if="previewModal">
       <input type="checkbox" id="preview-modal" class="modal-toggle" />
-      <label for="preview-modal" class="modal cursor-pointer" @click.self="modal = false">
+      <label for="preview-modal" class="modal cursor-pointer">
         <label class="modal-box relative" for="preview-modal">
           <Preview />
+        </label>
+      </label>
+    </div>
+
+    <div v-if="recurringModal">
+      <input type="checkbox" id="recurring-modal" class="modal-toggle" />
+      <label for="recurring-modal" class="modal cursor-pointer">
+        <label class="modal-box relative bordered" for="recurring-modal">
+          <DocumentRecurringForm @close="recurringModal = false" />
         </label>
       </label>
     </div>
@@ -88,7 +105,7 @@ async function save() {
     </ul>
 
     <div class="flex flex-row px-5 mb-5">
-      <div class="flex w-1/3 px-5 py-3">
+      <div class="w-1/3 px-5 py-3">
         <div v-if="useRoute().params['id'] === 'new' && controller().type() !== 'reminders'">
           <label class="label">
             <span class="label-text">Select a client</span>

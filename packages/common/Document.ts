@@ -1,6 +1,7 @@
 import * as dateFns from "date-fns";
 import { ClientType } from "./Client";
 import _ from "lodash";
+import Helpers from "./Helpers";
 
 export interface Position {
   id?: number;
@@ -39,38 +40,46 @@ export interface DiscountCharge {
   amount: number;
 }
 
+export interface DocumentData {
+  title: string;
+  positions: Position[];
+  discountsCharges: DiscountCharge[];
+  taxes: { [rate: number]: number };
+  headingText: string;
+  footerText: string;
+  date: Date;
+  dueDate: Date;
+  dueDays: number;
+  total: number;
+  net: number;
+  netNoDiscount: number;
+  taxOption: TaxOption;
+}
+
 export type DocumentType = {
   id?: string;
   clientId: string;
   number: string;
   status: string;
   offerId: string | null;
+  recurring: boolean;
+  recurringData: RecurringData;
   invoiceId: string | null;
   templateId: string | null;
   totalReminders: number;
   offer: DocumentType;
   invoices: DocumentType[];
   overdue: boolean;
-  data: {
-    title: string;
-    positions: Position[];
-    discountsCharges: DiscountCharge[];
-    taxes: { [rate: number]: number };
-    headingText: string;
-    footerText: string;
-    date: Date;
-    dueDate: Date;
-    dueDays: number;
-    total: number;
-    net: number;
-    netNoDiscount: number;
-    taxOption: TaxOption;
-  };
-
+  data: DocumentData;
   createdAt: Date;
   updatedAt: Date;
   type: string;
 };
+
+export interface RecurringData {
+  cron: string;
+  startDate: Date;
+}
 
 class Document implements DocumentType {
   id: string = "";
@@ -81,6 +90,8 @@ class Document implements DocumentType {
   offerId = null;
   templateId = "";
   invoiceId = null;
+  recurring = false;
+  recurringData = { startDate: new Date(), cron: "" };
   totalReminders: 0;
   overdue: false;
   offer: DocumentType;
@@ -108,13 +119,20 @@ class Document implements DocumentType {
 
   constructor(json?: any) {
     if (json) {
-      _.merge(this, json);
+      Helpers.merge(this, json);
 
       this.data.positions.map((p) => (p.focused = false));
       this.offer = new Document(json.offer);
       this.invoices = (json.invoices || []).map((i) => new Document(i));
       this.data.date = new Date(Date.parse(json.data.date.toString()));
       this.data.dueDate = new Date(Date.parse(json.data.dueDate.toString()));
+      this.recurringData.startDate = new Date(
+        Date.parse(
+          json.recurringData?.startDate?.toString() || new Date().toString(),
+        ),
+      );
+      // this.createdAt = new Date(Date.parse(json.createdAt.toString()));
+      // this.updatedAt = new Date(Date.parse(json.updatedAt.toString()));
     }
   }
 

@@ -1,0 +1,42 @@
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Document from 'App/Models/Document'
+import RecurringInvoice from 'App/Models/RecurringInvoice'
+import DocumentService from 'App/Services/Document'
+import parser from 'cron-parser'
+import { DateTime } from 'luxon'
+
+export default class RunRecurringInvoicesController {
+  public async index(ctx: HttpContextContract) {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const recurrings = await RecurringInvoice.query()
+      .where('startDate', '<=', today)
+      .andWhere('nextRun', '<=', today)
+      .preload('invoice')
+
+    for (const recurring of recurrings) {
+      const cron = parser.parse(recurring.cron)
+      const cronDate = cron.next().toDate()
+      cronDate.setHours(0, 0, 0, 0)
+
+      const existing = await Document.query()
+        .where('createdAt', '>=', new Date(recurring.nextRun.toString()))
+        .andWhere('id', recurring.invoiceId)
+        .andWhereNotNull('recurring_id')
+        .first()
+
+      if (existing) continue
+      await DocumentService.duplicate(
+        ctx,
+        recurring.invoiceId,
+        recurring.organizationId,
+        recurring.id
+      )
+      recurring.nextRun = DateTime.fromISO(cronDate.toISOString())
+
+      // await recurring.save()
+    }
+  }
+
+  public async store(ctx: HttpContextContract) {}
+}

@@ -55,11 +55,15 @@ select:focus {
   @apply border-base-100 #{!important};
 }
 
+.dp__menu {
+  @apply bg-base-100 #{!important};
+}
+
 .dp__preset_ranges {
   @apply text-sm text-white #{!important};
 }
 .dp__arrow_top {
-  @apply bg-info #{!important};
+  @apply bg-base-200 #{!important};
 }
 
 .dp__calendar_header_item,
@@ -72,7 +76,7 @@ select:focus {
 }
 
 .dp__today {
-  @apply border-none bg-primary bg-opacity-30 #{!important};
+  @apply border-none bg-base-300 text-base-content #{!important};
 }
 
 .dp__cell_inner {
@@ -86,12 +90,12 @@ select:focus {
 .dp__range_between,
 .dp__range_start,
 .dp__cell_inner:hover {
-  @apply bg-info bg-opacity-20 border-none #{!important};
+  @apply bg-base-300 border-none #{!important};
 }
 
 .dp__cell_inner:hover,
 .dp__range_start {
-  @apply bg-opacity-30 #{!important};
+  @apply bg-base-300 #{!important};
 }
 
 .input-group :first-child {
