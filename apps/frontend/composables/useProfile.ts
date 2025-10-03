@@ -37,12 +37,17 @@ class ProfileStore {
       });
     const data = await readData(file);
     const size = data.length / 1024;
+
+    const { $toast } = useNuxtApp();
+
     if (size > 5) {
-      useNotification().notify({
-        title: "Invalid image",
-        text: "The image is too large.",
+      $toast(`<div class="text-sm"><div><strong>Invalid image</strong></div><div>The image is too large</div></div>`, {
+        theme: "auto",
         type: "error",
+        position: "bottom-right",
+        dangerouslyHTMLString: true,
       });
+
       return;
     } else {
       this.me.data.avatar = data as string;
