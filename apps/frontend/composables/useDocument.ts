@@ -82,6 +82,7 @@ class DocumentStore extends Base<Document> {
   };
 
   updated = () => {
+    console.log("updated");
     this.item.value.rebuild();
     this.mustSave.value++;
   };
@@ -129,12 +130,12 @@ class DocumentStore extends Base<Document> {
   };
 
   handleNew = async () => {
+    console.log(useProfile().me.organization.settings[this.type()].dueDays);
     this.recurring.value = new Recurring();
     this.item.value.number = await useApi().number(this.singularType()).get();
     this.item.value.data.dueDate = dateFns.add(this.item.value.data.date, {
       days: useProfile().me.organization.settings[this.type()].dueDays,
     });
-    this.item.value.data.dueDays = dateFns.differenceInCalendarDays(this.item.value.data.dueDate, this.item.value.data.date);
 
     if (this.type() === "reminders") {
       this.handleReminder();

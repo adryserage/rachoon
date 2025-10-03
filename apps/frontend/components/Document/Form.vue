@@ -173,7 +173,7 @@ async function save() {
     <div class="alert px-5 text-error" v-if="controller().item.disabled()">
       <FaIcon icon="fa-solid fa-triangle-exclamation" />
       <p>
-        This invoice cannot be modified.
+        This {{ controller().singularType() }} cannot be modified.
         <span v-if="controller().item.convertedFromOffer()">It's been converted from an offer.</span>
       </p>
     </div>

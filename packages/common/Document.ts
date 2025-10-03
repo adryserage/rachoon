@@ -170,7 +170,8 @@ class Document implements DocumentType {
     this.calcTotal();
   }
 
-  public rebuild() {
+  rebuild = () => {
+    console.log("rebuild");
     this.data.dueDays = dateFns.differenceInCalendarDays(
       this.data.dueDate,
       this.data.date,
@@ -186,7 +187,7 @@ class Document implements DocumentType {
     this.timeout = setTimeout(() => {
       this.calculate();
     }, 100);
-  }
+  };
 
   public errors(): string[] {
     const e = [];
