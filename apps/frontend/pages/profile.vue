@@ -7,18 +7,23 @@ function save() {}
 </script>
 <template>
   <div>
-    <FormHeader title="Profile" icon="fa-user" />
-    <FormSection
-      title="Profile Information"
-      description="Update your profile information."
-    >
+    <FormHeader title="Profile" icon="fa-user">
+      <template #buttons>
+        <NuxtLink to="/logout" class="btn btn-sm btn-ghost text-error no-underline">
+          <FaIcon icon="fa-solid fa-right-from-bracket" />
+          Logout
+        </NuxtLink>
+      </template>
+    </FormHeader>
+    <FormSection title="Profile Information" description="Update your profile information.">
       <div class="flex gap-5">
         <form @submit="useProfile().save" class="w-1/2">
           <div>
             <label class="label w-full max-w-xs">
-              <span class="label-text"
-                >Username <span class="text-red-700">*</span></span
-              >
+              <span class="label-text">
+                Username
+                <span class="text-red-700">*</span>
+              </span>
             </label>
             <input
               type="text"
@@ -30,9 +35,10 @@ function save() {}
           </div>
           <div>
             <label class="label w-full max-w-xs">
-              <span class="label-text"
-                >Full name <span class="text-red-700">*</span></span
-              >
+              <span class="label-text">
+                Full name
+                <span class="text-red-700">*</span>
+              </span>
             </label>
             <input
               type="text"
@@ -44,9 +50,10 @@ function save() {}
           </div>
           <div>
             <label class="label w-full max-w-xs">
-              <span class="label-text"
-                >E-mail <span class="text-red-700">*</span></span
-              >
+              <span class="label-text">
+                E-mail
+                <span class="text-red-700">*</span>
+              </span>
             </label>
             <input
               type="text"
@@ -57,15 +64,12 @@ function save() {}
             />
           </div>
           <button type="submit" class="btn btn-sm gap-2 mt-5" @click="save">
-            <FaIcon icon="fa-solid fa-save " /> Save
+            <FaIcon icon="fa-solid fa-save " />
+            Save
           </button>
         </form>
         <div class="w-1/2 text-center">
-          <img
-            v-if="useProfile().me.data.avatar !== ''"
-            :src="useProfile().me.data.avatar"
-            class="h-32 w-auto inline-block rounded-full"
-          />
+          <img v-if="useProfile().me.data.avatar !== ''" :src="useProfile().me.data.avatar" class="h-32 w-auto inline-block rounded-full" />
           <div class="form-control">
             <input
               type="file"
@@ -83,16 +87,14 @@ function save() {}
       </div>
     </FormSection>
 
-    <FormSection
-      title="Update password"
-      description="Change your account password."
-    >
+    <FormSection title="Update password" description="Change your account password.">
       <form @submit="useProfile().savePassword">
         <div>
           <label class="label w-full max-w-xs">
-            <span class="label-text"
-              >Password <span class="text-red-700">*</span></span
-            >
+            <span class="label-text">
+              Password
+              <span class="text-red-700">*</span>
+            </span>
           </label>
           <input
             type="password"
@@ -105,9 +107,10 @@ function save() {}
         </div>
         <div>
           <label class="label w-full max-w-xs">
-            <span class="label-text"
-              >Password repeat <span class="text-red-700">*</span></span
-            >
+            <span class="label-text">
+              Password repeat
+              <span class="text-red-700">*</span>
+            </span>
           </label>
           <input
             type="password"
@@ -118,14 +121,12 @@ function save() {}
             v-model="useProfile().newPasswordRepeat"
           />
         </div>
-        <div
-          class="alert alert-error max-w-xs mt-5"
-          v-if="useProfile().newPassword !== useProfile().newPasswordRepeat"
-        >
+        <div class="alert alert-error max-w-xs mt-5" v-if="useProfile().newPassword !== useProfile().newPasswordRepeat">
           Passwords don't match
         </div>
         <button type="submit" class="btn btn-sm mt-5 gap-2">
-          <FaIcon icon="fa-solid fa-key " /> Save new password
+          <FaIcon icon="fa-solid fa-key " />
+          Save new password
         </button>
       </form>
     </FormSection>

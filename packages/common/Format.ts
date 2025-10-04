@@ -11,17 +11,24 @@ export default class Format {
   }
 
   static date(value: any, locale: string) {
-    console.log(value);
-    return DateTime.fromObject(value)
-      .setLocale(locale)
-      .toLocaleString(DateTime.DATE_SHORT); // const formatter = new Intl.DateTimeFormat(locale);
+    try {
+      return DateTime.fromObject(value)
+        .setLocale(locale)
+        .toLocaleString(DateTime.DATE_SHORT); // const formatter = new Intl.DateTimeFormat(locale);
+    } catch (_) {
+      return "Invalid Date";
+    }
     // return formatter.format(Date.parse(value));
   }
 
   static longDate(value: any, locale: string) {
-    return DateTime.fromObject(value)
-      .setLocale(locale)
-      .toLocaleString(DateTime.DATE_FULL);
+    try {
+      return DateTime.fromObject(value)
+        .setLocale(locale)
+        .toLocaleString(DateTime.DATE_FULL);
+    } catch (_) {
+      return "Invalid Date";
+    }
   }
 
   static max100(val: string) {
