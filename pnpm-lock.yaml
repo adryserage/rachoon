@@ -171,9 +171,6 @@ importers:
       '@types/lodash':
         specifier: ^4.17.1
         version: 4.17.1
-      '@vue-final-modal/nuxt':
-        specifier: ^1.0.3
-        version: 1.0.3(vue-final-modal@4.5.5)
       '@vuepic/vue-datepicker':
         specifier: ^8.5.1
         version: 8.5.1(vue@3.4.27)
@@ -210,9 +207,6 @@ importers:
       vue:
         specifier: ^3.4.21
         version: 3.4.27
-      vue-final-modal:
-        specifier: ^4.5.5
-        version: 4.5.5(@vueuse/core@10.9.0)(@vueuse/integrations@10.9.0)(focus-trap@7.5.4)(vue@3.4.27)
       vue-router:
         specifier: ^4.3.0
         version: 4.3.2(vue@3.4.27)
@@ -4053,18 +4047,6 @@ packages:
     dependencies:
       vite: 5.2.11(@types/node@20.12.10)(sass@1.77.0)
       vue: 3.4.27
-    dev: false
-
-  /@vue-final-modal/nuxt@1.0.3(vue-final-modal@4.5.5):
-    resolution: {integrity: sha512-I8YTvrBB93mLLV51Kn3BhlX5saAPqE4jz3Zb9jBm3wwMkvBkEtw3PwXq9kiGb+rNRS2v9EOL2FmhWWim++Mmvg==}
-    peerDependencies:
-      vue-final-modal: '>=4.0.0'
-    dependencies:
-      '@nuxt/kit': 3.11.2
-      vue-final-modal: 4.5.5(@vueuse/core@10.9.0)(@vueuse/integrations@10.9.0)(focus-trap@7.5.4)(vue@3.4.27)
-    transitivePeerDependencies:
-      - rollup
-      - supports-color
     dev: false
 
   /@vue-macros/common@1.10.3(vue@3.4.27):
@@ -13590,20 +13572,6 @@ packages:
 
   /vue-devtools-stub@0.1.0:
     resolution: {integrity: sha512-RutnB7X8c5hjq39NceArgXg28WZtZpGc3+J16ljMiYnFhKvd8hITxSWQSQ5bvldxMDU6gG5mkxl1MTQLXckVSQ==}
-    dev: false
-
-  /vue-final-modal@4.5.5(@vueuse/core@10.9.0)(@vueuse/integrations@10.9.0)(focus-trap@7.5.4)(vue@3.4.27):
-    resolution: {integrity: sha512-A6xgsXqE6eLw9e6Tq/W6pxDBmimPuSuvq20WL9TOZpZy7itPdGeNn8e1P15PCGqP2yHM3q2gJIchPY9ZJd8YsA==}
-    peerDependencies:
-      '@vueuse/core': '>=10.0.0'
-      '@vueuse/integrations': '>=10.0.0'
-      focus-trap: '>=7.2.0'
-      vue: '>=3.2.0'
-    dependencies:
-      '@vueuse/core': 10.9.0(vue@3.4.27)
-      '@vueuse/integrations': 10.9.0(focus-trap@7.5.4)(vue@3.4.27)
-      focus-trap: 7.5.4
-      vue: 3.4.27
     dev: false
 
   /vue-flow-layout@0.2.0:

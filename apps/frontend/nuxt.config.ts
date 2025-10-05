@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  css: ["~/assets/style.scss", "@fortawesome/fontawesome-svg-core/styles.css", "vue-final-modal/style.css"],
+  css: ["~/assets/style.scss", "@fortawesome/fontawesome-svg-core/styles.css"],
   devtools: { enabled: true },
   ssr: false,
   app: {
@@ -11,7 +11,7 @@ export default defineNuxtConfig({
       apiURL: process.env.API_URL || "https://api.rachoon.work",
     },
   },
-  modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss", "@vue-final-modal/nuxt"],
+  modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss"],
   build: {
     transpile: [
       "h3",
