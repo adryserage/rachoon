@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  css: ["~/assets/style.scss", "@fortawesome/fontawesome-svg-core/styles.css"],
+  css: ["~/assets/style.scss", "@fortawesome/fontawesome-svg-core/styles.css", "vue-final-modal/style.css"],
   devtools: { enabled: true },
   ssr: false,
   app: {
@@ -11,7 +11,7 @@ export default defineNuxtConfig({
       apiURL: process.env.API_URL || "https://api.rachoon.work",
     },
   },
-  modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss"],
+  modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss", "@vue-final-modal/nuxt"],
   build: {
     transpile: [
       "h3",
@@ -19,7 +19,6 @@ export default defineNuxtConfig({
       "@fortawesome/fontawesome-svg-core",
       "@fortawesome/free-solid-svg-icons",
       "@fortawesome/free-regular-svg-icons",
-      "@kyvg/vue3-notification",
       "@vuepic/vue-datepicker",
     ],
   },
