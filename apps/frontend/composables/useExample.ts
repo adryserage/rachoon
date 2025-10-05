@@ -110,8 +110,6 @@ export default defineStore("example", () => {
     invoice.number = Format.number(useSettings().settings.invoices.number, 0);
     offer.number = Format.number(useSettings().settings.offers.number, 0);
 
-    console.log("example", templateId);
-
     const object = example === "invoice" ? invoice : offer;
 
     return (await useRender(object, true, templateId)) as string[];
