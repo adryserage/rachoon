@@ -53,7 +53,8 @@ const discountsCharges = document.data.discountsCharges;
     Add discounts or charges to apply them on the subtotal.
   </p>
   <div class="flex justify-center mt-5">
-    <button class="btn btn-xs btn-info btn-outline mb-10 gap-1" @click="document.addDiscountCharge()" :disabled="document.disabled()">
+    <button class="btn btn-xs btn-info btn-outline mb-10 gap-1" @click="document.addDiscountCharge()"
+      :disabled="document.disabled()">
       <FaIcon icon="fa-add" />
       Add discount or charge
     </button>

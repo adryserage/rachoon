@@ -6,14 +6,20 @@ import * as dateFns from "date-fns";
 import _ from "lodash";
 import type { Template } from "~/models/template";
 import Base from "./_base";
+import { reactive } from "vue";
 
 class DocumentStore extends Base<Document> {
   clients = ref<Client[]>([]);
   templates = ref<Template[]>([]);
   mustSave = ref(-1);
-  offerToConvert = ref(new Document());
+  offer = ref(new Document());
   reminderInvoice = ref(new Document());
   recurring = ref(new Recurring());
+
+  offerToInvoiceOption = ref("full");
+  offerToInvoiceValue = ref(1);
+  offerToInvoiceValueType = ref("percent");
+
   parentList = this.list;
 
   setTemplate = (id: string) => {
@@ -40,8 +46,6 @@ class DocumentStore extends Base<Document> {
     }
     this.item.value.rebuild();
   };
-
-  offerToInvoice = (offer: Document) => { };
 
   listForClient = (id: string) => {
     this.filter("clientId", "=", id);
@@ -138,9 +142,8 @@ class DocumentStore extends Base<Document> {
 
     if (this.type() === "reminders") {
       this.handleReminder();
-    } else {
-      await this.maybeDoConvertOffer();
     }
+    if (this.offer.value) await this.handleOfferToInvoice();
   };
 
   form = async () => {
@@ -152,7 +155,7 @@ class DocumentStore extends Base<Document> {
     this.item.value = new Document();
     this.item.value.type = this.singularType();
     if (this.isNew()) {
-      this.handleNew();
+      await this.handleNew();
     } else {
       this.item.value = Helpers.merge<Document>(this.item.value, await useApi().documents(this.singularType()).get(id));
       if (this.item.value.recurringInvoice) {
@@ -181,46 +184,28 @@ class DocumentStore extends Base<Document> {
     }, `Are you sure you want to delete ${this.singularType()} ${this.item.value.number}?`);
   };
 
-  maybeDoConvertOffer = async () => {
+  calculateOfferToInvoice = () => {
+    const option = this.offerToInvoiceOption.value;
+    const value = Number(this.offerToInvoiceValue.value);
+    const valueType = this.offerToInvoiceValueType.value;
+    this.item.value.calculateInvoiceToConvertPositions({ ...this.offer.value }, option, value, valueType);
+  };
+
+  handleOfferToInvoice = async () => {
     if (useRoute().query.offer) {
       _.mergeWith(
-        this.offerToConvert.value,
+        this.offer.value,
         await useApi()
           .documents("offer")
           .get(useRoute().query.offer as string),
       );
-      this.item.value.removePositions();
-      this.offerToConvert.value.rebuild();
-      this.item.value.client = this.offerToConvert.value.client;
-      this.item.value.clientId = this.offerToConvert.value.clientId;
-      this.item.value.offerId = this.offerToConvert.value.id;
-      if (useRoute().query.option === "partial") {
-        this.offerToConvert.value.data.positions.map((p) => {
-          if (useRoute().query.valueType === "percent") p.price = (p.price / 100) * Number(useRoute().query.value);
-          if (useRoute().query.valueType === "fixed") p.price = ((Number(useRoute().query.value) / 100) * p.totalPercentage) / p.quantity;
-          p.price = Math.round(p.price * 100) / 100;
-          this.item.value.addPosition(p);
-        });
-      }
-      if (useRoute().query.option === "final") {
-        const previousNet = this.offerToConvert.value.invoices.reduce((p, c) => p + c.data.net, 0);
-        const newNet = this.offerToConvert.value.data.net - previousNet;
-        this.offerToConvert.value.data.positions.map((p) => {
-          p.price = ((newNet / 100) * p.totalPercentage) / p.quantity;
-          p.price = Math.round(p.price * 100) / 100;
-          this.item.value.addPosition(p);
-        });
-      }
-
-      if (["full", "final"].includes(useRoute().query.option as string)) {
-        this.offerToConvert.value.data.discountsCharges.map((d) => {
-          this.item.value.addDiscountCharge(d);
-        });
-      }
-      this.item.value.invoices = this.offerToConvert.value.invoices;
-      this.item.value.rebuild();
+      this.offer.value.rebuild();
+      this.item.value.client = this.offer.value.client;
+      this.item.value.clientId = this.offer.value.clientId;
+      this.item.value.offerId = this.offer.value.id;
+      this.calculateOfferToInvoice();
     } else {
-      _.mergeWith(this.offerToConvert.value, new Document());
+      _.mergeWith(this.offer.value, new Document());
     }
   };
 }

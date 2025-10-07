@@ -12,7 +12,6 @@ onMounted(() => {
       computed(() => JSON.stringify(controller().item.data.dueDate)),
     ],
     () => {
-      console.log("here");
       controller().updated();
     },
   );
@@ -28,46 +27,52 @@ async function save() {
 
 const settingsModal = ref(null);
 const recurringModal = ref(null);
+const offerToInvoiceModal = ref(null);
+
+const offerNumber = controller().offer.id !== "" ? ` from ${controller().offer.number}` : "";
+
+const convert = () => {
+  controller().calculateOfferToInvoice();
+};
 </script>
 <template>
   <Loading v-if="controller().loading" />
 
   <div v-else>
-    <FormHeader :title="`${controller().singularType(true)}`" :subtitle="`#${controller().item.number}`" icon="fa-file-invoice-dollar">
+    <FormHeader :title="`${controller().singularType(true)}`" :subtitle="`#${controller().item.number}${offerNumber}`"
+      icon="fa-file-invoice-dollar">
       <template #buttons>
-        <label
-          v-if="controller().item.isRecurring || controller().item.id === ''"
-          class="btn btn-sm btn-ghost btn-circle"
-          @click="recurringModal.showModal()"
-        >
+        <label v-if="controller().item.isRecurring || (controller().isNew() && controller().offer.id === '')"
+          class="btn btn-sm btn-ghost btn-circle" @click="recurringModal.showModal()">
           <FaIcon icon="fa-solid fa-repeat" :class="`${controller().recurring.active ? 'text-success' : ''}`" />
         </label>
 
         <Preview />
 
-        <button
-          class="btn btn-sm btn-ghost"
-          @click="controller().download()"
-          v-if="controller().item.id !== '' && controller().mustSave <= 1"
-        >
-          <FaIcon icon="fa-solid fa-file-pdf" />
-        </button>
-        <button class="btn btn-sm btn-ghost btn-circle" @click="controller().duplicate(controller().item.id)">
-          <FaIcon icon="fa-solid fa-copy " />
-        </button>
+        <label class="btn btn-sm btn-ghost btn-circle" @click="offerToInvoiceModal.showModal()"
+          v-if="controller().offer.id !== ''">
+          <FaIcon icon="fa-solid fa-file-export" />
+        </label>
 
-        <NuxtLink
-          :to="`/reminders/new?invoice=${controller().item.id}`"
-          class="btn btn-sm btn-ghost btn-circle"
-          v-if="controller().item.type === 'invoice' && controller().item.id !== ''"
-        >
+        <label class="btn btn-sm btn-ghost" @click="controller().download()"
+          v-if="controller().item.id !== '' && controller().mustSave <= 1">
+          <FaIcon icon="fa-solid fa-file-pdf" />
+        </label>
+        <label v-if="!controller().isNew" class="btn btn-sm btn-ghost btn-circle"
+          @click="controller().duplicate(controller().item.id)">
+          <FaIcon icon="fa-solid fa-copy " />
+        </label>
+
+        <NuxtLink :to="`/reminders/new?invoice=${controller().item.id}`" class="btn btn-sm btn-ghost btn-circle"
+          v-if="controller().item.type === 'invoice' && controller().item.id !== ''">
           <FaIcon icon="fa-solid fa-file-lines" />
         </NuxtLink>
         <label class="btn btn-sm btn-ghost btn-circle cursor-pointer" @click="settingsModal.showModal()">
           <FaIcon icon="fa-solid fa-gear" />
         </label>
 
-        <label class="btn btn-sm btn-ghost text-error gap-2" v-if="!controller().isNew()" @click="controller().delete()">
+        <label class="btn btn-sm btn-ghost text-error gap-2" v-if="!controller().isNew()"
+          @click="controller().delete()">
           <FaIcon icon="fa-solid fa-close" />
           Delete
         </label>
@@ -85,9 +90,16 @@ const recurringModal = ref(null);
       </div>
     </dialog>
 
-    <dialog ref="recurringModal" class="modal">
+    <dialog ref="recurringModal" class="modal"
+      v-if="controller().item.isRecurring || (controller().isNew() && controller().offer.id === '')">
       <div class="modal-box">
         <DocumentRecurringForm />
+      </div>
+    </dialog>
+
+    <dialog v-if="controller().offer.id !== ''" ref="offerToInvoiceModal" class="modal" @close="convert" :open="controller().offer.id !== ''">
+      <div class="modal-box">
+        <DocumentToInvoice />
       </div>
     </dialog>
 
@@ -124,7 +136,8 @@ const recurringModal = ref(null);
         <div class="w-full prose text-center pt-3" v-if="controller().item.overdue">
           <h2 class="m-0 p-0 text-error">Invoice overdue!</h2>
           <p>You should create a reminder.</p>
-          <NuxtLink class="btn btn-sm btn-neutral gap-2 no-underline" :to="`/reminders/new?invoice=${controller().item.id}`">
+          <NuxtLink class="btn btn-sm btn-neutral gap-2 no-underline"
+            :to="`/reminders/new?invoice=${controller().item.id}`">
             <FaIcon icon="fa-solid fa-bell" />
             Create reminder
           </NuxtLink>
@@ -132,12 +145,6 @@ const recurringModal = ref(null);
       </div>
       <div class="flex w-1/3 justify-end">
         <div class="">
-          <div class="prose">
-            <h2 v-if="controller().offerToConvert.id !== ''" class="mt-0 !text-error">
-              {{ useRoute().query.option }} of
-              {{ controller().offerToConvert.number }}
-            </h2>
-          </div>
           <label class="label">
             <span class="label-text">Invoice date:</span>
           </label>

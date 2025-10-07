@@ -1,17 +1,26 @@
 <script setup lang="ts">
-	import { Document } from '~~/models/document'
+import Format from "@repo/common/Format";
 
-	const props = defineProps({
-		offer: Object,
-	})
-	const offer = props.offer as Document
-	const option = ref('full')
-	const value = ref(null)
-	const valueType = ref('percent')
+const controller = () => useDocument();
+const offer = controller().offer;
 
-	const amount = computed(() =>
-		valueType.value === 'percent' ? useFormat.toCurrency((offer.data.net / 100) * value.value) : useFormat.toCurrency(value.value)
-	)
+const format = (value: number) => Format.toCurrency(value, useSettings().settings.general.locale, useSettings().settings.general.currency);
+
+const amount = computed(() =>
+	controller().offerToInvoiceValueType === "percent"
+		? format((offer.data.net / 100) * controller().offerToInvoiceValue)
+		: format(controller().offerToInvoiceValue),
+);
+
+const emit = defineEmits(["close"]);
+
+const finalAmount = computed(() => {
+	let paid = 0;
+	offer.invoices.forEach((i) => {
+		paid += i.data.net;
+	});
+	return offer.data.net - paid;
+});
 </script>
 
 <template>
@@ -27,29 +36,41 @@
 					</tr>
 				</tbody>
 			</table>
-			<div class="divider"></div>
 		</div>
-		<h3 class="mt-0">Type</h3>
-		<p>What kind of invoice would you like to create?</p>
+		<h3 class="mt-0">Convert Offer to Invoice</h3>
+		<p>How much of the offer should be calculated as an invoice?</p>
 	</div>
 	<label class="flex flex-row gap-2 mb-2" v-if="offer.invoices.length === 0">
-		<input type="radio" name="option" class="radio radio-warning radio-sm" @change="option = 'full'" :checked="option === 'full'" />
-		<span class="label-text">Full - convert offer to invoice</span>
-	</label>
-	<label class="flex flex-row gap-2 mb-2">
-		<input type="radio" name="option" class="radio radio-warning radio-sm" @change="option = 'partial'" :checked="option === 'partial'" />
-		<span class="label-text">Partial - only a specific amount of the offer</span>
+		<input type="radio" name="option" class="radio radio-xs" @change="controller().offerToInvoiceOption = 'full'"
+			:checked="controller().offerToInvoiceOption === 'full'" />
+		<span class="label-text">
+			Use entire amount of
+			{{ Format.toCurrency(controller().offer.data.net, useSettings().settings.general.locale,
+				useSettings().settings.general.currency) }}
+		</span>
 	</label>
 	<label class="flex flex-row gap-2 mb-2" v-if="offer.invoices.length > 0">
-		<input type="radio" name="option" class="radio radio-warning radio-sm" @change="option = 'final'" :checked="option === 'final'" />
-		<span class="label-text">Final - Remaining amount (subtract previous invoices)</span>
+		<input type="radio" name="option" class="radio radio-xs" @change="controller().offerToInvoiceOption = 'final'"
+			:checked="controller().offerToInvoiceOption === 'final'" />
+		<span class="label-text">
+			Use the remaining amount of
+			{{ Format.toCurrency(finalAmount, useSettings().settings.general.locale, useSettings().settings.general.currency)
+			}}
+		</span>
 	</label>
-	<div class="form-control prose mt-10" v-if="option === 'partial'">
+	<label class="flex flex-row gap-2 mb-2">
+		<input type="radio" name="option" class="radio radio-xs" @change="controller().offerToInvoiceOption = 'partial'"
+			:checked="controller().offerToInvoiceOption === 'partial'" />
+		<span class="label-text">Use only a partial amount</span>
+	</label>
+
+	<div class="form-control prose mt-10" v-if="controller().offerToInvoiceOption === 'partial'">
 		<h3>Partial amount</h3>
 		<p>What amount should be converted to the invoice?</p>
 		<div class="input-group">
-			<input type="text" placeholder="0" class="input input-bordered input-sm w-40" v-model="value" />
-			<select class="select select-bordered select-sm bg-base-300" v-model="valueType">
+			<input type="text" placeholder="0" class="input input-bordered input-sm w-40"
+				v-model="controller().offerToInvoiceValue" />
+			<select class="select select-bordered select-sm bg-base-300" v-model="controller().offerToInvoiceValueType">
 				<option value="percent">%</option>
 				<option value="fixed">
 					{{ useCountries.mySymbol() }}
@@ -59,9 +80,7 @@
 		</div>
 	</div>
 	<div class="divider"></div>
-	<div class="text-center mt-5">
-		<NuxtLink :href="`/invoices/new?offer=${offer.id}&option=${option}&value=${value}&valueType=${valueType}`" class="btn btn-primary btn-sm">
-			Convert to invoice
-		</NuxtLink>
-	</div>
+	<form method="dialog" class="text-right">
+		<button class="btn btn-sm btn-neutral" @click="emit('close')">Apply</button>
+	</form>
 </template>
