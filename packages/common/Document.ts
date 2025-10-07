@@ -121,7 +121,7 @@ class Document implements DocumentType {
   isFromRecurring = false;
   overdue: false;
   offer: DocumentType;
-  invoices: DocumentType[];
+  invoices: DocumentType[] = [];
   recurringInvoice: RecurringType = null;
   data = {
     title: "",
@@ -164,6 +164,48 @@ class Document implements DocumentType {
     this.calcTaxes();
     this.calcNet();
     this.calcTotal();
+  }
+
+  calculateInvoiceToConvertPositions(
+    offer: Document,
+    option: string,
+    value: number,
+    valueType: string,
+  ) {
+    this.data.taxOption = offer.data.taxOption;
+    this.removePositions();
+    if (option === "partial") {
+      offer.data.positions.forEach((position) => {
+        let p = { ...position };
+        console.log(p);
+        if (valueType === "percent") p.price = (p.price / 100) * value;
+        if (valueType === "fixed")
+          p.price = ((value / 100) * p.totalPercentage) / p.quantity;
+        p.price = Math.round(p.price * 100) / 100;
+        this.data.positions.push(p);
+      });
+    }
+    if (option === "full") {
+      offer.data.positions.forEach((position) => {
+        const p = { ...position };
+        this.addPosition(p);
+      });
+    }
+    if (option === "final") {
+      const previousNet = offer.invoices.reduce((p, c) => p + c.data.net, 0);
+      const newNet = offer.data.net - previousNet;
+      offer.data.positions.map((position) => {
+        const p = { ...position };
+        p.price = ((newNet / 100) * p.totalPercentage) / p.quantity;
+        p.price = Math.round(p.price * 100) / 100;
+        this.addPosition(p);
+      });
+    }
+
+    offer.data.discountsCharges.map((discountOrCharge) => {
+      const d = { ...discountOrCharge };
+      this.addDiscountCharge(d);
+    });
   }
 
   rebuild() {
@@ -308,6 +350,7 @@ class Document implements DocumentType {
 
   removePositions() {
     this.data.positions.splice(0, this.data.positions.length);
+    return this.data;
   }
 
   removeDiscountCharge(index: number) {

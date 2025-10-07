@@ -3,18 +3,18 @@ const props = defineProps({
   index: { type: Number, required: true },
 });
 const document = useDocument().item;
-const position = document.data.positions[props.index];
+const position = () =>document.data.positions[props.index];
 const taxRates = useProfile().me.organization.settings.taxes.rates;
 const units = useProfile().me.organization.settings.units;
 
-position.tax = position.tax || taxRates.filter((r) => r.default)[0].rate;
-position.unit = position.unit || units.filter((u) => u.default)[0].title;
+position().tax = position().tax || taxRates.filter((r) => r.default)[0].rate;
+position().unit = position().unit || units.filter((u) => u.default)[0].title;
 </script>
 
 <template>
   <tr>
     <td colspan="8">
-      <div class="collapse" :class="{ 'collapse-open': position.focused }">
+      <div class="collapse" :class="{ 'collapse-open': position().focused }">
         <table class="">
           <tbody>
             <tr>
@@ -26,7 +26,7 @@ position.unit = position.unit || units.filter((u) => u.default)[0].title;
                   type="text"
                   :disabled="document.disabled()"
                   placeholder="Add a short summary ..."
-                  v-model="position.title"
+                  v-model="position().title"
                   @focus="document.focusPosition(index)"
                   class="input input-bordered input-sm w-full"
                 />
@@ -38,10 +38,10 @@ position.unit = position.unit || units.filter((u) => u.default)[0].title;
                     type="text"
                     placeholder="0"
                     v-maska="'#*.#*'"
-                    v-model="position.quantity"
+                    v-model="position().quantity"
                     class="input input-bordered input-sm w-full"
                   />
-                  <select class="select select-bordered select-sm bg-base-300" v-model="position.unit" :disabled="document.disabled()">
+                  <select class="select select-bordered select-sm bg-base-300" v-model="position().unit" :disabled="document.disabled()">
                     <option v-for="u in units" :value="u.title" :key="u.title">
                       {{ u.title }}
                     </option>
@@ -53,7 +53,7 @@ position.unit = position.unit || units.filter((u) => u.default)[0].title;
                   <input
                     type="text"
                     placeholder="0"
-                    v-model.number="position.price"
+                    v-model.number="position().price"
                     v-maska="'#*.##'"
                     class="input input-bordered input-sm w-full"
                     :disabled="document.disabled()"
@@ -63,7 +63,7 @@ position.unit = position.unit || units.filter((u) => u.default)[0].title;
               </td>
               <td width="120">
                 <label class="input-group" v-if="document.type !== 'reminder'">
-                  <select class="select select-bordered select-sm" v-model="position.tax" :disabled="document.disabled()">
+                  <select class="select select-bordered select-sm" v-model="position().tax" :disabled="document.disabled()">
                     <option v-for="r in taxRates" :value="r.rate" :key="r.rate">{{ r.rate }}%</option>
                   </select>
                   <span>%</span>
@@ -75,7 +75,7 @@ position.unit = position.unit || units.filter((u) => u.default)[0].title;
                     type="text"
                     placeholder="0"
                     class="input input-bordered input-sm w-full"
-                    v-model.number="position.discount"
+                    v-model.number="position().discount"
                     v-maska="{ mask: '#*.##', preprocessor: (val) => useFormat.max100(val) }"
                     :disabled="document.disabled()"
                   />
@@ -83,7 +83,7 @@ position.unit = position.unit || units.filter((u) => u.default)[0].title;
                 </label>
               </td>
               <td width="200" class="text-right">
-                <strong>{{ useFormat.toCurrency(position.net) }}</strong>
+                <strong>{{ useFormat.toCurrency(position().net) }}</strong>
                 <!--   <Popper arrow hover> -->
                 <!--     <span class="text-info">{{ useFormat.toCurrency(position.net) }}</span> -->
                 <!--     <template #content> -->
@@ -121,7 +121,7 @@ position.unit = position.unit || units.filter((u) => u.default)[0].title;
           </tbody>
         </table>
         <div class="collapse-content p-0 mx-10">
-          <Editor v-model="position.text" placeholder="Add a description ..." />
+          <Editor v-model="position().text" placeholder="Add a description ..." />
         </div>
       </div>
     </td>
