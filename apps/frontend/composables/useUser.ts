@@ -25,10 +25,16 @@ class UserStore extends Base<User> {
     this.loading.value = false;
   };
 
-  delete = async () => {
+  delete = async (id?: string) => {
     useApp().confirm(async () => {
-      await useApi().users().delete(this.item.value.id);
-      useRouter().replace(`/${this.type()}/`);
+      await useApi()
+        .users()
+        .delete(id || this.item.value.id);
+      if (id) {
+        this.items.value = this.items.value.filter((i) => i.id !== (id || this.item.value.id));
+      } else {
+        useRouter().replace(`/${this.type()}/`);
+      }
     }, `Are you sure you want to delete the user ${this.item.value.data.username}?`);
   };
 }

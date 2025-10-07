@@ -41,7 +41,7 @@ class DocumentStore extends Base<Document> {
     this.item.value.rebuild();
   };
 
-  offerToInvoice = (offer: Document) => {};
+  offerToInvoice = (offer: Document) => { };
 
   listForClient = (id: string) => {
     this.filter("clientId", "=", id);
@@ -172,9 +172,11 @@ class DocumentStore extends Base<Document> {
     this.updated();
   };
 
-  delete = async () => {
+  delete = async (id?: string) => {
     useApp().confirm(async () => {
-      await useApi().documents("invoice-or-offer").delete(this.item.value.id);
+      await useApi()
+        .documents("invoice-or-offer")
+        .delete(id || this.item.value.id);
       useRouter().replace(`/${this.type()}/`);
     }, `Are you sure you want to delete ${this.singularType()} ${this.item.value.number}?`);
   };

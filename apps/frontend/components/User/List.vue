@@ -66,17 +66,21 @@ controller().list();
               <td>
                 <ContextMenu>
                   <li>
-                    <NuxtLink href="/profile" :class="useRoute().fullPath.includes('/profile') ? 'active' : ''">
+                    <NuxtLink :href="`/users/${u.id}`">
                       <FaIcon icon="fa-regular fa-edit" />
-                      Edit
+                      Edit User
                     </NuxtLink>
                   </li>
 
+                  <li class="mt-2 p-0 disabled">
+                    <div class="divider m-0 p-0"></div>
+                  </li>
+
                   <li>
-                    <NuxtLink href="/logout" class="text-error">
-                      <FaIcon icon="fa-solid fa-trash" />
+                    <label @click="controller().delete(u.id)" class="text-error">
+                      <FaIcon icon="fa-solid fa-close" />
                       Delete
-                    </NuxtLink>
+                    </label>
                   </li>
                 </ContextMenu>
               </td>

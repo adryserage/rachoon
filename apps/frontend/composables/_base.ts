@@ -12,7 +12,7 @@ export default class Base<T extends IBase> {
     });
   }
 
-  type = (firstToUpper = false) => {
+  type = (firstToUpper = false): string => {
     let res = useRoute().path.split("/")[1];
     if (firstToUpper) res = res.charAt(0).toUpperCase() + res.slice(1);
     return res;

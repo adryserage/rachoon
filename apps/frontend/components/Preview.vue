@@ -18,7 +18,7 @@ async function load() {
 
 watch(
   () => open.value,
-  (o) => {
+  (_) => {
     if (open.value) {
       load();
     }
@@ -27,30 +27,23 @@ watch(
 </script>
 
 <template>
-  <label
-    class="btn btn-sm btn-ghost btn-circle"
-    for="preview-modal"
-    @click="
-      modal.showModal();
-      open = true;
-    "
-  >
+  <label class="btn btn-sm btn-ghost btn-circle" for="preview-modal" @click="
+    modal.showModal();
+  open = true;
+  ">
     <FaIcon icon="fa-solid fa-eye" />
   </label>
 
-  <dialog
-    ref="modal"
-    class="modal"
-    @close="
-      () => {
-        open = false;
-      }
-    "
-  >
+  <dialog ref="modal" class="modal" @close="
+    () => {
+      open = false;
+    }
+  ">
     <div class="">
       <Loading v-if="loading" />
       <div class="carousel max-w-full" v-else>
-        <div class="carousel-item w-full text-center justify-center" v-for="(image, i) in images" :key="i" :id="`item${i}`">
+        <div class="carousel-item w-full text-center justify-center" v-for="(image, i) in images" :key="i"
+          :id="`item${i}`">
           <a :href="image" target="_blank"><img :src="image" class="rounded-md inline shadow-xl max-h-[80vh]" /></a>
         </div>
       </div>

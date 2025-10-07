@@ -26,7 +26,7 @@ const icons = { offers: "fa-file-contract", invoices: "fa-file-invoice", reminde
   <Loading v-if="controller().loading" />
 
   <div v-else>
-    <FormHeader :title="controller().type(true)" :icon="icons[controller().type()]" :divider="false">
+    <FormHeader :title="controller().type(true)" :icon="icons[controller().type() as string]" :divider="false">
       <template #buttons>
         <NuxtLink
           class="btn btn-sm btn-neutral gap-2 no-underline"
@@ -80,7 +80,9 @@ const icons = { offers: "fa-file-contract", invoices: "fa-file-invoice", reminde
         <thead>
           <tr>
             <th>#</th>
-            <th width="50"><FaIcon icon="fa-solid fa-repeat" class="ml-1" /></th>
+            <th width="50">
+              <FaIcon icon="fa-solid fa-repeat" class="ml-1" />
+            </th>
             <th>Client</th>
             <!-- <th> -->
             <!--   {{ controller().type() === "invoices" ? "Offer" : "Invoiced" }} -->
@@ -167,18 +169,43 @@ const icons = { offers: "fa-file-contract", invoices: "fa-file-invoice", reminde
             <td width="50" class="text-right">
               <ContextMenu>
                 <li>
-                  <NuxtLink href="/#" @click="controller().download(i)">
-                    <FaIcon icon="fa-regular fa-file-pdf" />
-                    Download PDF
+                  <NuxtLink :to="`/invoices/${i.id}`">
+                    <FaIcon icon="fa-regular fa-edit" />
+                    Edit {{ controller().singularType(true) }}
                   </NuxtLink>
                 </li>
+                <li>
+                  <label @click="controller().download(i)">
+                    <FaIcon icon="fa-regular fa-file-pdf" />
+                    Download PDF
+                  </label>
+                </li>
+
                 <li v-if="i.type === 'offer' && i.invoices.reduce((p, c) => (p += c.data.net), 0) < i.data.net">
-                  <NuxtLink href="#">
+                  <NuxtLink href="/invoices">
                     <label for="offerToInvoice-modal">
-                      <FaIcon icon="fa-solid fa-file-invoice-dollar" />
+                      <FaIcon icon="fa-solid fa-money-bill-transfer" />
                       Create Invoice
                     </label>
                   </NuxtLink>
+                </li>
+
+                <li v-if="i.type === 'invoice'">
+                  <NuxtLink :href="`/reminders/new?invoice=${i.id}`">
+                    <FaIcon icon="fa-solid fa-bullhorn" />
+                    Create Reminder
+                  </NuxtLink>
+                </li>
+
+                <li class="mt-2 p-0 disabled">
+                  <div class="divider m-0 p-0"></div>
+                </li>
+
+                <li class="mt-0">
+                  <label class="text-error" @click="controller().delete(i.id)">
+                    <FaIcon icon="fa-solid fa-close" />
+                    Delete
+                  </label>
                 </li>
               </ContextMenu>
             </td>

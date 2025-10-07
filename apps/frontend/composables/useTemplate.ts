@@ -28,10 +28,16 @@ class TemplateStore extends Base<Template> {
     return tpl;
   };
 
-  delete = async () => {
+  delete = async (id?: string) => {
     useApp().confirm(async () => {
-      await useApi().templates().delete(this.item.value.id);
-      useRouter().replace(`/${this.type()}/`);
+      await useApi()
+        .templates()
+        .delete(id || this.item.value.id);
+      if (id) {
+        this.items.value = this.items.value.filter((i) => i.id !== (id || this.item.value.id));
+      } else {
+        useRouter().replace(`/${this.type()}/`);
+      }
     }, `Are you sure you want to delete the template ${this.item.value.title}?`);
   };
 

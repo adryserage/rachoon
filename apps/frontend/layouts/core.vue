@@ -7,7 +7,7 @@
     <div class="drawer-side">
       <label for="app-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
 
-      <div class="flex flex-col min-h-dvh bg-base-100 w-80 border-r border-base-300">
+      <div class="flex flex-col min-h-dvh max-h-dvh h-dvh bg-base-100 w-80 border-r border-base-300">
         <NuxtLink href="/" class="logo my-5 text-center">
           <img src="@/assets/logo.png" class="h-10 w-auto inline-block" />
           <!-- <img -->

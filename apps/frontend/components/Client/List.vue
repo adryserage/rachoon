@@ -54,6 +54,7 @@ onMounted(() => {
               <th width="200">Offers</th>
               <th width="200">Invoices</th>
               <th width="200">Reminders</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -84,6 +85,27 @@ onMounted(() => {
               </td>
               <td>
                 <NuxtLink :to="`/reminders/client/${c.id}`">{{ c.totalReminders }} Reminders</NuxtLink>
+              </td>
+              <td>
+                <ContextMenu>
+                  <li>
+                    <NuxtLink :href="`/clients/${c.id}`">
+                      <FaIcon icon="fa-regular fa-edit" />
+                      Edit Client
+                    </NuxtLink>
+                  </li>
+
+                  <li class="mt-2 p-0 disabled">
+                    <div class="divider m-0 p-0"></div>
+                  </li>
+
+                  <li>
+                    <label @click="controller().delete(c.id)" class="text-error">
+                      <FaIcon icon="fa-solid fa-close" />
+                      Delete
+                    </label>
+                  </li>
+                </ContextMenu>
               </td>
             </tr>
           </tbody>

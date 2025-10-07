@@ -12,10 +12,17 @@ class ClientStore extends Base<Client> {
     }
   };
 
-  delete = async () => {
+  delete = async (id?: string) => {
     useApp().confirm(async () => {
-      await useApi().clients().delete(this.item.value.id);
-      useRouter().replace(`/${this.type()}/`);
+      await useApi()
+        .clients()
+        .delete(id || this.item.value.id);
+
+      if (id) {
+        this.items.value = this.items.value.filter((i) => i.id !== (id || this.item.value.id));
+      } else {
+        useRouter().replace(`/${this.type()}/`);
+      }
     }, `Are you sure you want to delete the client ${this.item.value.name}?`);
   };
 
