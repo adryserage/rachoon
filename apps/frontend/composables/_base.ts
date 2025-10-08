@@ -8,7 +8,7 @@ export default class Base<T extends IBase> {
   ) {
     this.getAllFunc = getAllFunc;
     watch([computed(() => JSON.stringify(this.sortKeys.value)), computed(() => JSON.stringify(this.filterKeys.value))], () => {
-      this.list();
+      this.doRefresh();
     });
   }
 
@@ -33,16 +33,17 @@ export default class Base<T extends IBase> {
   pages = ref(0);
   loading = ref(false);
   perPage = ref(20);
+  refresh = ref(false);
   singularType = (firstToUpper: boolean = false) => this.type(firstToUpper).slice(0, this.type(firstToUpper).length - 1);
 
   async filter(key: string, operator: string, value: string) {
-    if (!this.filterKeys.value[key]) {
-      this.filterKeys.value = { ...this.filterKeys.value, [key]: { operator: operator, value: value } };
-    } else {
-      const tmp = this.sortKeys.value;
-      tmp[key] = { operator: operator, value: value };
-      this.filterKeys.value = tmp;
-    }
+    // if (!this.filterKeys.value[key]) {
+    //   this.filterKeys.value = { ...this.filterKeys.value, [key]: { operator: operator, value: value } };
+    // } else {
+    //   const tmp = this.sortKeys.value;
+    //   tmp[key] = { operator: operator, value: value };
+    //   this.filterKeys.value = tmp;
+    // }
   }
 
   isNew = () => (useRoute().params["id"] as string) === "new";
@@ -55,22 +56,17 @@ export default class Base<T extends IBase> {
     this.hasErrors.value = false;
   }
 
-  sort = (key: string) => {
-    if (!this.sortKeys.value[key]) {
-      this.sortKeys.value = { ...this.sortKeys.value, [key]: "asc" };
-    } else {
-      const tmp = this.sortKeys.value;
-      if (tmp[key] === "asc") {
-        tmp[key] = "desc";
-      } else if (tmp[key] === "desc") {
-        delete tmp[key];
-      }
-      this.sortKeys.value = tmp;
-    }
+  sort = (sortKeys: any) => {
+    this.sortKeys.value = sortKeys;
+  };
+
+  doRefresh = () => {
+    this.refresh.value = true;
+    this.list();
   };
 
   list = async () => {
-    if (!this.loadMore.value) {
+    if (!this.refresh.value) {
       this.page.value = 1;
       this.loading.value = true;
     }
@@ -82,7 +78,7 @@ export default class Base<T extends IBase> {
       this.items.value = res.rows as T[];
     }
     this.loading.value = false;
-    this.loadMore.value = false;
+    this.refresh.value = false;
   };
 
   hasMore = () => {

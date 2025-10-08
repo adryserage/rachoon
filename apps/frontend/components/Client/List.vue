@@ -4,6 +4,15 @@ const controller = () => useClient();
 onMounted(() => {
   controller().list();
 });
+
+const columns = [
+  { label: "# Number", field: "number", class: "", width: "180" },
+  { label: "Name", field: "name", class: "" },
+  { label: "Offers", field: "offers", class: "" },
+  { label: "Invoices", field: "pendingInvoices", class: "" },
+  { label: "Reminders", field: "reminders", class: "" },
+  { label: "", field: "actions", class: "text-right" },
+];
 </script>
 
 <template>
@@ -30,88 +39,68 @@ onMounted(() => {
         </p>
       </div>
     </div>
-    <div v-else>
-      <div class="overflow-x-auto">
-        <table class="table table-compact w-full">
-          <thead>
-            <tr>
-              <th width="200" @click="controller().sort('number')">
-                # Number
-                <FaIcon v-if="controller().sortKeys['number']"
-                  :icon="`fa-solid ${controller().sortKeys['number'] === 'asc' ? 'fa-chevron-up' : 'fa-chevron-down'}`"
-                  class="ml-1" />
-              </th>
-              <th @click="controller().sort('name')">
-                Name
-                <FaIcon v-if="controller().sortKeys['name']"
-                  :icon="`fa-solid ${controller().sortKeys['name'] === 'asc' ? 'fa-chevron-up' : 'fa-chevron-down'}`"
-                  class="ml-1" />
-              </th>
-              <th width="200">Offers</th>
-              <th width="200">Invoices</th>
-              <th width="200">Reminders</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="hover" v-for="c in controller().items" :key="c.id">
-              <td>
-                <NuxtLink :href="`/clients/${c.id}`" class="link">
-                  {{ c.number }}
-                </NuxtLink>
-                <br />
-                <small class="opacity-50">last modified {{ useFormat.date(c.updatedAt) }}</small>
-              </td>
-              <td>
-                {{ c.name }}
-                <br />
-                <small class="opacity-50">{{ c.data.info.vat }}</small>
-              </td>
-              <td>
-                <NuxtLink :to="`/offers/client/${c.id}`">{{ c.totalOffers }} Offers</NuxtLink>
-                <br />
-                <span v-if="c.pendingOffers > 0" class="text-error text-opacity-50">{{ c.pendingOffers }}</span>
-                &nbsp;
-              </td>
-              <td>
-                <NuxtLink :to="`/invoices/client/${c.id}`">{{ c.totalInvoices }} Invoices</NuxtLink>
-                <br />
-                <small v-if="c.pendingInvoices > 0" class="text-error text-opacity-50">pending {{ c.pendingInvoices
-                  }}</small>
-                &nbsp;
-              </td>
-              <td>
-                <NuxtLink :to="`/reminders/client/${c.id}`">{{ c.totalReminders }} Reminders</NuxtLink>
-              </td>
-              <td class="text-right">
-                <ContextMenu>
-                  <li>
-                    <NuxtLink :href="`/clients/${c.id}`">
-                      <FaIcon icon="fa-regular fa-edit" />
-                      Edit Client
-                    </NuxtLink>
-                  </li>
+    <DataTable
+      :columns="columns"
+      :rows="useClient().items"
+      :sortableFields="['number', 'name']"
+      :showLoadMore="controller().hasMore()"
+      @doLoadMore="controller().doLoadMore()"
+      @sort="(sort) => controller().sort(sort)"
+      :loading="controller().refresh || controller().loadMore"
+    >
+      <template #number="{ row }">
+        <NuxtLink :href="`/clients/${row.id}`" class="link">
+          {{ row.number }}
+        </NuxtLink>
+        <br />
+        <small class="opacity-50">last modified {{ useFormat.date(row.updatedAt) }}</small>
+      </template>
 
-                  <li class="mt-2 p-0 disabled">
-                    <div class="divider m-0 p-0"></div>
-                  </li>
+      <template #name="{ row }">
+        {{ row.name }}
+        <br />
+        <small class="opacity-50">{{ row.data.info.vat }}</small>
+      </template>
 
-                  <li>
-                    <label @click="controller().delete(c.id)" class="text-error">
-                      <FaIcon icon="fa-solid fa-close" />
-                      Delete
-                    </label>
-                  </li>
-                </ContextMenu>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="mt-10 gap-2 flex justify-center" v-if="controller().hasMore()">
-      <span :class="`loading loading-spinner loading-xs ${controller().loading ? '' : 'opacity-0'}`"></span>
-      <button @click="controller().doLoadMore()" class="btn btn-xs btn-neutral inline-block">Load more</button>
-    </div>
+      <template #offers="{ row }">
+        <NuxtLink :to="`/offers/client/${row.id}`">{{ row.totalOffers }} Offers</NuxtLink>
+        <br />
+        <span v-if="row.pendingOffers > 0" class="text-error text-opacity-50">{{ row.pendingOffers }}</span>
+        &nbsp;
+      </template>
+
+      <template #pendingInvoices="{ row }">
+        <NuxtLink :to="`/invoices/client/${row.id}`">{{ row.totalInvoices }} Invoices</NuxtLink>
+        <br />
+        <small v-if="row.pendingInvoices > 0" class="text-error text-opacity-50">pending {{ row.pendingInvoices }}</small>
+        &nbsp;
+      </template>
+
+      <template #reminders="{ row }">
+        <NuxtLink :to="`/reminders/client/${row.id}`">{{ row.totalReminders }} Reminders</NuxtLink>
+      </template>
+
+      <template #actions="{ row }">
+        <ContextMenu>
+          <li>
+            <NuxtLink :href="`/clients/${row.id}`">
+              <FaIcon icon="fa-regular fa-edit" />
+              Edit Client
+            </NuxtLink>
+          </li>
+
+          <li class="mt-2 p-0 disabled">
+            <div class="divider m-0 p-0"></div>
+          </li>
+
+          <li>
+            <label @click="controller().delete(row.id)" class="text-error">
+              <FaIcon icon="fa-solid fa-close" />
+              Delete
+            </label>
+          </li>
+        </ContextMenu>
+      </template>
+    </DataTable>
   </div>
 </template>

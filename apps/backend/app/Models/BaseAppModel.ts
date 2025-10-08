@@ -39,12 +39,18 @@ export default class BaseAppModel extends compose(BaseModel, SoftDeletes) {
         const sort = ctx.request.qs()['sort']
         if (typeof sort !== 'object') return
         for (const field in sort) {
-          if (!this.fieldInColumns(field, columns)) throw new Exception(`Invalid sort field: ${field}. Allowed fields are [${this.allowedFilds(columns).join(', ')}]`, 400)
+          if (!this.fieldInColumns(field, columns))
+            throw new Exception(
+              `Invalid sort field: ${field}. Allowed fields are [${this.allowedFilds(columns).join(
+                ', '
+              )}]`,
+              400
+            )
           let order = sort[field]
           if (!order || !['asc', 'desc'].includes(order.toLowerCase())) {
             order = 'asc'
           }
-          query.orderBy(field, order).debug(true)
+          query.orderBy(field, order)
         }
       },
       //default sort
@@ -56,14 +62,26 @@ export default class BaseAppModel extends compose(BaseModel, SoftDeletes) {
     query.if(ctx.request.qs()['filter'], (query) => {
       //TODO: throw validation errors
       const filter = ctx.request.qs()['filter']
-      if (typeof filter !== 'object') throw new Exception('Invalid filter format. Use filter[field][operator]=value', 400)
+      if (typeof filter !== 'object')
+        throw new Exception('Invalid filter format. Use filter[field][operator]=value', 400)
       for (const field in filter) {
         const f = filter[field]
-        if (typeof f !== 'object') throw new Exception('Invalid filter format. Use filter[field][operator]=value', 400)
-        if (!this.fieldInColumns(field, columns)) throw new Exception(`Invalid filter field: ${field}. Allowed fields are [${this.allowedFilds(columns).join(', ')}]`, 400)
+        if (typeof f !== 'object')
+          throw new Exception('Invalid filter format. Use filter[field][operator]=value', 400)
+        if (!this.fieldInColumns(field, columns))
+          throw new Exception(
+            `Invalid filter field: ${field}. Allowed fields are [${this.allowedFilds(columns).join(
+              ', '
+            )}]`,
+            400
+          )
         const op = Object.keys(f)[0]
         let value = f[op]
-        if (!this.operators.includes(op)) throw new Exception(`Invalid operator: ${op}. Allowed operators are [${this.operators.join(', ')}]`, 400)
+        if (!this.operators.includes(op))
+          throw new Exception(
+            `Invalid operator: ${op}. Allowed operators are [${this.operators.join(', ')}]`,
+            400
+          )
         if (!value) continue
         if (op === 'like' && !value.includes('%')) {
           value = `%${value}%`
