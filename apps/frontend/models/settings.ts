@@ -80,7 +80,7 @@ class Settings implements SettingsData {
   invoices = {
     title: "Invoice",
     number: {
-      format: "INV-{number}{date:yyMMdd}",
+      format: "INV-{number}-{date:yMMdd}",
       padZeros: 3,
     },
     dueDays: 30,
@@ -88,7 +88,7 @@ class Settings implements SettingsData {
   offers = {
     title: "Offer",
     number: {
-      format: "OFF-{number}{date:yyMMdd}",
+      format: "OFF-{number}-{date:yMMdd}",
       padZeros: 3,
     },
     dueDays: 30,
@@ -96,7 +96,7 @@ class Settings implements SettingsData {
   reminders = {
     title: "Reminder",
     number: {
-      format: "REM-{number}{date:yyMMdd}",
+      format: "REM-{number}-{date:yMMdd}",
       padZeros: 3,
     },
     fees: [],
@@ -105,7 +105,7 @@ class Settings implements SettingsData {
 
   clients = {
     number: {
-      format: "CLI-{number}{date:yyMMdd}",
+      format: "CLI-{number}-{date:yMMdd}",
       start: 0,
       padZeros: 3,
     },

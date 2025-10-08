@@ -111,10 +111,8 @@ const icons = { offers: "fa-file-contract", invoices: "fa-file-invoice", reminde
               </span>
               <span v-if="i.invoices.length > 0" class="text-warning">
                 {{
-                  Format.toCurrency(
-                    i.invoices.reduce((p, c) => (p += c.data.total), 0),
-                    useSettings().settings.general.locale,
-                    useSettings().settings.general.currency,
+                  useFormat.toCurrency(
+                    i.invoices.reduce((p, c) => (p += c.data.total), 0)
                   )
                 }}
                 <br />

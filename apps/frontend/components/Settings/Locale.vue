@@ -9,7 +9,8 @@ import Format from "@repo/common/Format";
           <label class="label w-full max-w-xs">
             <span class="label-text">Currency</span>
           </label>
-          <select class="select select-bordered select-sm bg-base-300" v-model="useSettings().settings.general.currency">
+          <select class="select select-bordered select-sm bg-base-300"
+            v-model="useSettings().settings.general.currency">
             <option v-for="c in useCountries.currencies" :value="c.cc">{{ c.cc }} ({{ c.symbol }})</option>
           </select>
         </div>
@@ -27,11 +28,11 @@ import Format from "@repo/common/Format";
       <div class="w-1/2 prose">
         <p>Currency preview</p>
         <h2 class="m-0 p-0">
-          {{ Format.toCurrency(100000, useSettings().settings.general.locale, useSettings().settings.general.currency) }}
+          {{ useFormat.toCurrency(100000) }}
         </h2>
         <p class="mt-5">Date preview</p>
         <h2 class="m-0 p-0">
-          {{ Format.date(new Date(), useSettings().settings.general.locale) }}
+          {{ useFormat.date(new Date()) }}
         </h2>
       </div>
     </div>
