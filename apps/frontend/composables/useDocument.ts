@@ -22,6 +22,14 @@ class DocumentStore extends Base<Document> {
 
   parentList = this.list;
 
+  isOfferToConvert = () => this.isNew() && useRoute().query.offer;
+  isInvoice = () => this.singularType() === "invoice";
+  isOffer = () => this.singularType() === "offer"
+  isReminder = () => this.singularType() === "reminder";
+  isDisabled = () => false
+
+
+
   setTemplate = (id: string) => {
     this.item.value.templateId = id;
   };

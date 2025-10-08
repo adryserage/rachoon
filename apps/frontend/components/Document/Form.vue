@@ -29,7 +29,7 @@ const settingsModal = ref(null);
 const recurringModal = ref(null);
 const offerToInvoiceModal = ref(null);
 
-const offerNumber = controller().offer.id !== "" ? ` from ${controller().offer.number}` : "";
+const offerNumber = controller().isOfferToConvert() ? ` from ${controller().offer.number}` : "";
 
 const convert = () => {
   controller().calculateOfferToInvoice();
@@ -42,7 +42,7 @@ const convert = () => {
     <FormHeader :title="`${controller().singularType(true)}`" :subtitle="`#${controller().item.number}${offerNumber}`"
       icon="fa-file-invoice-dollar">
       <template #buttons>
-        <label v-if="controller().item.isRecurring || (controller().isNew() && controller().offer.id === '')"
+        <label v-if="controller().item.isRecurring || (controller().isNew() && !controller().isOfferToConvert())"
           class="btn btn-sm btn-ghost btn-circle" @click="recurringModal.showModal()">
           <FaIcon icon="fa-solid fa-repeat" :class="`${controller().recurring.active ? 'text-success' : ''}`" />
         </label>
@@ -50,21 +50,21 @@ const convert = () => {
         <Preview />
 
         <label class="btn btn-sm btn-ghost btn-circle" @click="offerToInvoiceModal.showModal()"
-          v-if="controller().offer.id !== ''">
+          v-if="controller().isOfferToConvert()">
           <FaIcon icon="fa-solid fa-file-export" />
         </label>
 
         <label class="btn btn-sm btn-ghost" @click="controller().download()"
-          v-if="controller().item.id !== '' && controller().mustSave <= 1">
+          v-if="!controller().isNew() && controller().mustSave <= 1">
           <FaIcon icon="fa-solid fa-file-pdf" />
         </label>
-        <label v-if="!controller().isNew" class="btn btn-sm btn-ghost btn-circle"
+        <label v-if="!controller().isNew()" class="btn btn-sm btn-ghost btn-circle"
           @click="controller().duplicate(controller().item.id)">
           <FaIcon icon="fa-solid fa-copy " />
         </label>
 
         <NuxtLink :to="`/reminders/new?invoice=${controller().item.id}`" class="btn btn-sm btn-ghost btn-circle"
-          v-if="controller().item.type === 'invoice' && controller().item.id !== ''">
+          v-if="!controller().isNew() && controller().isInvoice()">
           <FaIcon icon="fa-solid fa-file-lines" />
         </NuxtLink>
         <label class="btn btn-sm btn-ghost btn-circle cursor-pointer" @click="settingsModal.showModal()">
@@ -91,13 +91,14 @@ const convert = () => {
     </dialog>
 
     <dialog ref="recurringModal" class="modal"
-      v-if="controller().item.isRecurring || (controller().isNew() && controller().offer.id === '')">
+      v-if="controller().item.isRecurring || (controller().isNew() && !controller().isOfferToConvert())">
       <div class="modal-box">
         <DocumentRecurringForm />
       </div>
     </dialog>
 
-    <dialog v-if="controller().offer.id !== ''" ref="offerToInvoiceModal" class="modal" @close="convert" :open="controller().offer.id !== ''">
+    <dialog v-if="controller().isOfferToConvert()" ref="offerToInvoiceModal" class="modal" @close="convert"
+      :open="controller().offer.id !== ''">
       <div class="modal-box">
         <DocumentToInvoice />
       </div>
@@ -111,7 +112,7 @@ const convert = () => {
 
     <div class="flex flex-row px-5 mb-5">
       <div class="w-1/3 px-5 py-3">
-        <div v-if="useRoute().params['id'] === 'new' && controller().type() !== 'reminders'">
+        <div v-if="controller().isNew() && !controller().isReminder() && !controller().isOfferToConvert()">
           <label class="label">
             <span class="label-text">Select a client</span>
           </label>
@@ -119,7 +120,8 @@ const convert = () => {
         </div>
 
         <div class="prose text-sm" v-if="controller().item.client">
-          <h3 class="m-0 p-0" v-if="!controller().isNew()">{{ controller().item.client.name }}</h3>
+          <h3 class="m-0 p-0" v-if="!controller().isNew() || controller().isOfferToConvert()">{{
+            controller().item.client.name }}</h3>
           <p class="m-0 p-0">
             <br />
             {{ controller().item.client.data.address.street }}

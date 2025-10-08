@@ -43,8 +43,9 @@ export default class Format {
     const d = number.match(/\{date:[a-zA-Z_\-\.]+\}/);
     if (d) {
       const format = d[0].replace("{date:", "").replace("}", "");
+      console.log(format)
       try {
-        const date = dateFns.format(new Date(), format);
+        const date = DateTime.now().toFormat(format);
         number = number.replace(d[0], date);
       } catch (e) {
         number = number.replace(d[0], "INVALID-DATEFORMAT");

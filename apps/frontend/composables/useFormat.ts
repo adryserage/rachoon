@@ -3,17 +3,17 @@ import Format from "@repo/common/Format";
 function toCurrency(value: any) {
   return Format.toCurrency(
     value,
-    useProfile().me.organization.settings.general.locale,
-    useProfile().me.organization.settings.general.currency,
+    useSettings().settings.general.locale,
+    useSettings().settings.general.currency,
   );
 }
 
 function date(value: any) {
-  return Format.date(value, useProfile().me.organization.settings.general.locale);
+  return Format.date(value, useSettings().settings.general.locale);
 }
 
 function longDate(value: any) {
-  return Format.longDate(value, useProfile().me.organization.settings.general.locale);
+  return Format.longDate(value, useSettings().settings.general.locale);
 }
 
 function max100(val: string) {

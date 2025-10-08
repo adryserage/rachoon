@@ -4,7 +4,7 @@ import Format from "@repo/common/Format";
 const controller = () => useDocument();
 const offer = controller().offer;
 
-const format = (value: number) => Format.toCurrency(value, useSettings().settings.general.locale, useSettings().settings.general.currency);
+const format = (value: number) => useFormat().toCurrency(value);
 
 const amount = computed(() =>
 	controller().offerToInvoiceValueType === "percent"
@@ -45,8 +45,7 @@ const finalAmount = computed(() => {
 			:checked="controller().offerToInvoiceOption === 'full'" />
 		<span class="label-text">
 			Use entire amount of
-			{{ Format.toCurrency(controller().offer.data.net, useSettings().settings.general.locale,
-				useSettings().settings.general.currency) }}
+			{{ useFormat.toCurrency(controller().offer.data.net) }}
 		</span>
 	</label>
 	<label class="flex flex-row gap-2 mb-2" v-if="offer.invoices.length > 0">
@@ -54,7 +53,7 @@ const finalAmount = computed(() => {
 			:checked="controller().offerToInvoiceOption === 'final'" />
 		<span class="label-text">
 			Use the remaining amount of
-			{{ Format.toCurrency(finalAmount, useSettings().settings.general.locale, useSettings().settings.general.currency)
+			{{ useFormat.toCurrency(finalAmount)
 			}}
 		</span>
 	</label>
