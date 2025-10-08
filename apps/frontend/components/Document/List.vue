@@ -23,6 +23,7 @@ const columns = [
   { label: "# Number", field: "number", class: "", width: "180" },
   { label: "", field: "recurring", class: "" },
   { label: "Client", field: "client", class: "" },
+  { label: "", field: "status", class: "" },
   { label: "Due Date", field: "dueDate", class: "" },
   { label: "Net", field: "net", class: "" },
   { label: "Total", field: "total", class: "" },

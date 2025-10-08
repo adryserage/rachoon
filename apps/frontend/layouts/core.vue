@@ -1,10 +1,10 @@
 <template>
   <div class="drawer md:drawer-open">
     <input id="app-drawer" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content">
+    <div class="drawer-content md:pl-80">
       <slot />
     </div>
-    <div class="drawer-side">
+    <div class="drawer-side !fixed">
       <label for="app-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
 
       <div class="flex flex-col min-h-dvh max-h-dvh h-dvh bg-base-100 w-80 border-r border-base-300">
@@ -17,12 +17,14 @@
           <!-- /> -->
         </NuxtLink>
         <div class="divider m-0 p-0"></div>
-        <NavigationMain />
-        <div class="divider m-0"></div>
-        <NavigationSettings />
-        <div class="divider m-0"></div>
-        <NavigationSecondary />
-        <div class="divider m-0"></div>
+        <div class="overflow-y-auto">
+          <NavigationMain />
+          <div class="divider m-0"></div>
+          <NavigationSettings />
+          <div class="divider m-0"></div>
+          <NavigationSecondary />
+          <div class="divider m-0"></div>
+        </div>
         <div class="mt-auto mb-5 px-5">
           <NuxtLink href="/profile">
             <div class="flex gap-3 justify-between items-center">
