@@ -106,13 +106,34 @@ export default defineStore("example", () => {
   offer.client = client;
   offer.calculate();
 
+  const reminder = new Document()
+  reminder.type = "reminder";
+  reminder.data.positions = [
+{
+      title: "Invoice #12345",
+      text: "",
+      quantity: 1,
+      price: 3000,
+      tax: 0,
+      unit: "hrs",
+    },
+
+  ]
+
+  reminder.client = client;
+  reminder.calculate();
+
   async function preview(example: string, templateId: string = "") {
     invoice.number = Format.number(useSettings().settings.invoices.number, 0);
     offer.number = Format.number(useSettings().settings.offers.number, 0);
+    reminder.number = Format.number(useSettings().settings.reminders.number, 0);
 
-    const object = example === "invoice" ? invoice : offer;
+    const invoicePreview = await useRender(invoice, true, templateId);
+    const offerPreview = await useRender(offer, true, templateId);
+    const reminderPreview = await useRender(reminder, true, templateId);
 
-    return (await useRender(object, true, templateId)) as string[];
+
+    return [...invoicePreview, ...offerPreview, ...reminderPreview];
   }
 
   return { invoice, offer, preview };

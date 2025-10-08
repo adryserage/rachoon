@@ -1,6 +1,14 @@
 <script setup lang="ts">
 const controller = () => useUser();
 controller().list();
+
+const columns = [
+  { label: "", field: "avatar", class: "", width: "60" },
+  { label: "Name", field: "name", class: "" },
+  { label: "Email", field: "email", class: "" },
+  { label: "Role", field: "role", class: "" },
+  { label: "", field: "actions", class: "text-right" },
+];
 </script>
 
 <template>
@@ -33,61 +41,52 @@ controller().list();
     </div>
 
     <div v-else>
-      <div class="">
-        <table class="table table-zebra table-compact w-full">
-          <thead>
-            <tr>
-              <th width="60"></th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="hover" v-for="u in controller().items" :key="u.id">
-              <td>
-                <div class="avatar placeholder">
-                  <div class="bg-success text-black rounded-full w-8">
-                    <img v-if="u.data.avatar !== ''" :src="u.data.avatar" />
-                    <span v-else>{{ u.initials() }}</span>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <NuxtLink :href="`/users/${u.id}`" class="link">
-                  {{ u.data.fullName }}
-                </NuxtLink>
-                <br />
-                <small class="opacity-50">last modified {{ useFormat.date(u.updatedAt) }}</small>
-              </td>
-              <td>{{ u.email }}</td>
-              <td>{{ u.role }}</td>
-              <td class="text-right">
-                <ContextMenu>
-                  <li>
-                    <NuxtLink :href="`/users/${u.id}`">
-                      <FaIcon icon="fa-regular fa-edit" />
-                      Edit User
-                    </NuxtLink>
-                  </li>
+      <DataTable
+        :columns="columns"
+        :rows="controller().items"
+        :sortableFields="['email', 'role']"
+        :showLoadMore="controller().hasMore()"
+        @doLoadMore="controller().doLoadMore()"
+        @sort="(sort) => controller().sort(sort)"
+        :loading="controller().refresh || controller().loadMore"
+      >
+        <template #avatar="{ row }">
+          <div class="avatar placeholder">
+            <div class="bg-success text-black rounded-full w-8">
+              <img v-if="row.data.avatar !== ''" :src="row.data.avatar" />
+              <span v-else>{{ row.initials() }}</span>
+            </div>
+          </div>
+        </template>
+        <template #name="{ row }">
+          <NuxtLink :href="`/users/${row.id}`" class="link">
+            {{ row.data.fullName }}
+          </NuxtLink>
+          <br />
+          <small class="opacity-50">last modified {{ useFormat.date(row.updatedAt) }}</small>
+        </template>
+        <template #actions="{ row }">
+          <ContextMenu>
+            <li>
+              <NuxtLink :href="`/users/${row.id}`">
+                <FaIcon icon="fa-regular fa-edit" />
+                Edit User
+              </NuxtLink>
+            </li>
 
-                  <li class="mt-2 p-0 disabled">
-                    <div class="divider m-0 p-0"></div>
-                  </li>
+            <li class="mt-2 p-0 disabled">
+              <div class="divider m-0 p-0"></div>
+            </li>
 
-                  <li>
-                    <label @click="controller().delete(u.id)" class="text-error">
-                      <FaIcon icon="fa-solid fa-close" />
-                      Delete
-                    </label>
-                  </li>
-                </ContextMenu>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+            <li>
+              <label @click="controller().delete(row.id)" class="text-error">
+                <FaIcon icon="fa-solid fa-close" />
+                Delete
+              </label>
+            </li>
+          </ContextMenu>
+        </template>
+      </DataTable>
     </div>
   </div>
   <div class="mt-10 gap-2 flex justify-center" v-if="controller().hasMore()">
