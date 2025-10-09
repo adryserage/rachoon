@@ -12,7 +12,7 @@ const { isOpen } = useDrawer();
       <label for="app-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
 
       <div class="flex flex-col min-h-dvh max-h-dvh h-dvh bg-base-100 w-80 border-r border-base-300">
-        <NuxtLink href="/" class="logo my-5 text-center">
+        <NuxtLink href="/" class="logo my-3 text-center">
           <img src="@/assets/logo.png" class="h-10 w-auto inline-block" />
           <!-- <img -->
           <!--   v-if="useProfile().me.organization.data.logo !== ''" -->
