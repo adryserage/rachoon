@@ -60,7 +60,7 @@ export default class BaseAppModel extends compose(BaseModel, SoftDeletes) {
   )
 
   public static searchBy = scope((query, ctx: HttpContextContract, model: typeof BaseAppModel) =>
-    query.if(ctx.request.qs()['q'], (query) => {
+    query.if(ctx.request.qs()['q'] && ctx.request.qs()['q'] !== '', (query) => {
       query.andWhere((q) => {
         const fields = model.indexedFields || []
         for (const field of fields) {
