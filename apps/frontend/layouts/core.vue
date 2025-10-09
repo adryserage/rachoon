@@ -29,6 +29,14 @@ const { isOpen } = useDrawer();
           <NavigationSecondary />
         </div>
         <div class="mt-auto mb-5 px-5">
+          <div class="mb-12 text-center opacity-40">
+            <label class="text-sm">
+              Press
+              <kbd class="kbd kbd-sm">?</kbd>
+              to see Shortcuts
+            </label>
+          </div>
+
           <NuxtLink href="/profile">
             <div class="flex gap-3 justify-between items-center">
               <div class="">
