@@ -76,6 +76,6 @@ const handleSorted = (field: string) => {
   </div>
 
   <div class="mt-10 gap-2 flex justify-center" v-if="showLoadMore">
-    <button @click="emit('doLoadMore')" class="btn btn-xs btn-neutral inline-block">Load more</button>
+    <button @click="emit('doLoadMore')" class="btn btn-xs btn-neutral hover:bg-sky-900 inline-block">Load more</button>
   </div>
 </template>

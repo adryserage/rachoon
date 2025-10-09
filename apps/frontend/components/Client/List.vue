@@ -21,7 +21,7 @@ const columns = [
   <div v-else>
     <FormHeader title="Clients" icon="fa-user-tie" :divider="false" showSearch v-model="controller().search">
       <template #buttons>
-        <NuxtLink class="btn btn-sm btn-neutral gap-2 no-underline" href="/clients/new">
+        <NuxtLink class="btn btn-new btn-sm btn-neutral gap-2 no-underline" href="/clients/new">
           <FaIcon icon="fa-solid fa-plus-circle " />
           New client
         </NuxtLink>

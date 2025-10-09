@@ -43,10 +43,10 @@ const convert = () => {
       <template #buttons>
         <label
           v-if="controller().item.isRecurring || (controller().isNew() && !controller().isOfferToConvert())"
-          class="btn btn-sm btn-ghost btn-circle"
+          :class="`btn btn-sm btn-ghost btn-circle ${controller().recurring.active ? 'text-green-500 bg-green-900 bg-opacity-15' : ''}`"
           @click="recurringModal.showModal()"
         >
-          <FaIcon icon="fa-solid fa-repeat" :class="`${controller().recurring.active ? 'text-success' : ''}`" />
+          <FaIcon icon="fa-solid fa-repeat" />
         </label>
 
         <Preview />

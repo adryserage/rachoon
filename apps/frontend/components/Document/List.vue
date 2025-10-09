@@ -41,7 +41,7 @@ const columns = [
     >
       <template #buttons>
         <NuxtLink
-          class="btn btn-sm bg-emerald-500 hover:text-white text-black gap-2 no-underline"
+          class="btn btn-new btn-sm gap-2 no-underline"
           :href="`/${controller().type()}/new`"
           v-if="controller().type() !== 'reminders'"
         >

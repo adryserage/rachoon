@@ -288,6 +288,10 @@ table table td {
   @apply border-none;
 }
 
+.btn-new {
+  @apply bg-emerald-500 text-black hover:bg-emerald-300;
+}
+
 .btn-ghost svg {
   /* @apply text-base-300; */
 }
