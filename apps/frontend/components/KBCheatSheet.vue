@@ -1,26 +1,26 @@
+<script setup lang="ts">
+const keys = ["N", "G"];
+const routes = ["Client", "Invoice", "Order", "Reminder", "Template"];
+</script>
+
 <template>
-  <div>
-    <ul>
-      <li class="flex items-center gap-2">
-        <kbd class="kbd kbd-sm mr-1">N</kbd>
-        <kbd class="kbd kbd-sm">C</kbd>
-        <span class="text-sm ml-3">Create a new Client</span>
-      </li>
-      <li class="flex items-center gap-2">
-        <kbd class="kbd kbd-sm mr-1">N</kbd>
-        <kbd class="kbd kbd-sm">I</kbd>
-        <span class="text-sm ml-3">Create a new Invoice</span>
-      </li>
-      <li class="flex items-center gap-2">
-        <kbd class="kbd kbd-sm mr-1">N</kbd>
-        <kbd class="kbd kbd-sm">O</kbd>
-        <span class="text-sm ml-3">Create a new Order</span>
-      </li>
-      <li class="flex items-center gap-2">
-        <kbd class="kbd kbd-sm mr-1">N</kbd>
-        <kbd class="kbd kbd-sm">T</kbd>
-        <span class="text-sm ml-3">Create a new Template</span>
-      </li>
-    </ul>
-  </div>
+  <dialog class="modal" :ref="(el) => (useApp().cheatsheetModal = el)">
+    <div class="modal-box">
+      <div class="flex gap-10">
+        <div v-for="key in keys">
+          <div class="prose mb-4">
+            <h2 class="m-0 p-0">{{ key === "N" ? "Create" : "Navigate" }}</h2>
+          </div>
+
+          <ul class="text-sm">
+            <li v-for="route in routes" class="mb-2">
+              <kbd class="kbd kbd-sm mr-1">{{ key }}</kbd>
+              <kbd class="kbd kbd-sm">{{ route.charAt(0) }}</kbd>
+              {{ key === "N" ? `Create new ${route}` : `Navigate to ${route}s` }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </dialog>
 </template>
