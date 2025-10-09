@@ -2,9 +2,6 @@
 import { Document } from "~~/models/document";
 import * as datefns from "date-fns";
 
-definePageMeta({
-  layout: "core",
-});
 const props = defineProps({
   clientId: { type: String, default: "" },
   list: { type: Array as () => Document[], default: null },
