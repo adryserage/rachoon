@@ -1,0 +1,19 @@
+name: Build & Deploy
+run-name: Deploying
+on:
+  push:
+    tags:
+      - "*"
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: |
+            ad-on-is/rachoon:latest
+            ad-on-is/rachoon:${{ github.sha }}
