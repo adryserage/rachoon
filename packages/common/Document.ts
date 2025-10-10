@@ -41,20 +41,20 @@ class Recurring implements RecurringType {
 }
 
 export interface Position {
-  id?: number;
+  id: number;
   title: string;
-  text?: string;
+  text: string;
   quantity: number;
   unit: string;
   price: number;
   tax: number;
-  taxPrice?: number;
-  discount?: number;
-  net?: number;
-  netNoDiscount?: number;
-  total?: number;
-  focused?: boolean;
-  totalPercentage?: number;
+  taxPrice: number;
+  discount: number;
+  net: number;
+  netNoDiscount: number;
+  total: number;
+  focused: boolean;
+  totalPercentage: number;
 }
 
 export interface TaxOption {
@@ -95,7 +95,7 @@ export interface DocumentData {
 
 export type DocumentType = {
   id?: string;
-  clientId: string;
+  clientId: string | null;
   number: string;
   status: string;
   offerId: string | null;
@@ -116,7 +116,7 @@ export type DocumentType = {
 
 class Document implements DocumentType {
   id: string = "";
-  clientId: string = null;
+  clientId = null;
   client: ClientType;
   number: string = "";
   status: string = "pending";
@@ -129,7 +129,7 @@ class Document implements DocumentType {
   overdue: false;
   offer: DocumentType;
   invoices: DocumentType[] = [];
-  recurringInvoice: RecurringType = null;
+  recurringInvoice: RecurringType | null = null;
   data = {
     title: "",
     positions: [] as Position[],
@@ -228,7 +228,7 @@ class Document implements DocumentType {
   }
 
   errors = (): string[] => {
-    const e = [];
+    const e: string[] = [];
     if (this.clientId === null) {
       e.push("You need to select a client");
     }
@@ -330,18 +330,18 @@ class Document implements DocumentType {
     pos: Position = {
       id: Date.now(),
       title: "",
-      text: null,
-      quantity: null,
-      unit: null,
-      price: null,
-      tax: null,
-      taxPrice: null,
-      discount: null,
-      netNoDiscount: null,
-      net: null,
-      total: null,
+      text: "",
+      quantity: 0,
+      unit: "",
+      price: 0,
+      tax: 0,
+      taxPrice: 0,
+      discount: 0,
+      netNoDiscount: 0,
+      net: 0,
+      total: 0,
       focused: false,
-      totalPercentage: null,
+      totalPercentage: 0,
     },
   ) {
     this.data.positions.push({ ...pos });
@@ -368,7 +368,7 @@ class Document implements DocumentType {
     d: DiscountCharge = {
       id: Date.now().toString(),
       title: "",
-      value: null,
+      value: 0,
       type: "discount",
       valueType: "percent",
       amount: 0,

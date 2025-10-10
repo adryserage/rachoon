@@ -1,15 +1,6 @@
-import { SoftDeletes } from '@ioc:Adonis/Addons/LucidSoftDeletes'
-import { compose } from '@ioc:Adonis/Core/Helpers'
 import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
-import {
-  column,
-  beforeSave,
-  BaseModel,
-  belongsTo,
-  BelongsTo,
-  computed,
-} from '@ioc:Adonis/Lucid/Orm'
+import { column, beforeSave, belongsTo, BelongsTo, computed } from '@ioc:Adonis/Lucid/Orm'
 import Organization from './Organization'
 import HashIDs from 'App/Helpers/hashids'
 import BaseAppModel from './BaseAppModel'

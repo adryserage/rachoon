@@ -17,13 +17,13 @@ export interface ClientData {
   };
   conditions: {
     earlyPayment: {
-      discount: number;
-      days: number;
+      discount: number | null;
+      days: number | null;
     };
-    invoiceDueDays: number;
-    rate: number;
+    invoiceDueDays: number | null;
+    rate: number | null;
     discount: {
-      value: number;
+      value: number | null;
       valueType: string;
     };
   };
@@ -75,7 +75,7 @@ class Client implements ClientType {
   }
 
   public errors(): string[] {
-    const e = [];
+    const e: string[] = [];
     if (this.name === "") {
       e.push("Name is required");
     }

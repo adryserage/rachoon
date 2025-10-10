@@ -63,7 +63,7 @@ export default class Document extends BaseAppModel {
   public type: string
 
   @column()
-  public data: DocumentData
+  public data: any
 
   @column()
   public recurring: boolean

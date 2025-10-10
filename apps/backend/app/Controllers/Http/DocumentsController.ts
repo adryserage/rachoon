@@ -56,7 +56,7 @@ export default class DocumentsController {
       recurringInvoice.fill(body.recurringInvoice)
       recurringInvoice.$attributes.organizationId = ctx.auth.user!.organizationId
       recurringInvoice.$attributes.invoiceId = document.id
-      const r = await recurringInvoice.save()
+      await recurringInvoice.save()
     }
 
     return document
@@ -102,10 +102,6 @@ export default class DocumentsController {
   }
 
   public async duplicate(ctx: HttpContextContract) {
-    return await DocumentService.duplicate(
-      ctx,
-      ctx.request.param('id'),
-      ctx.auth.user!.organizationId
-    )
+    return await DocumentService.duplicate(ctx.request.param('id'), ctx.auth.user!.organizationId)
   }
 }

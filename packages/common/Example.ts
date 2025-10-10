@@ -32,6 +32,14 @@ const invoice = new Document();
 invoice.type = "invoice";
 invoice.data.positions = [
   {
+    id: Date.now(),
+    taxPrice: 0,
+    discount: 0,
+    net: 0,
+    netNoDiscount: 0,
+    total: 0,
+    totalPercentage: 0,
+    focused: false,
     title: "Lorem ipsum dolor sit amet",
     text: "<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.</p>",
     quantity: 5,
@@ -40,6 +48,14 @@ invoice.data.positions = [
     unit: "hrs",
   },
   {
+    id: Date.now(),
+    taxPrice: 0,
+    discount: 0,
+    net: 0,
+    netNoDiscount: 0,
+    total: 0,
+    totalPercentage: 0,
+    focused: false,
     title: "Lorem ipsum dolor sit amet",
     text: "<p>Lorem ipsum dolor sit amet, consectetuer</p>",
     quantity: 10,
@@ -51,6 +67,7 @@ invoice.data.positions = [
 invoice.data.taxOption = {
   title: "Apply taxes",
   applicable: true,
+  default: true,
 };
 invoice.data.discountsCharges = [
   {
@@ -69,6 +86,14 @@ const offer = new Document();
 offer.type = "offer";
 offer.data.positions = [
   {
+    id: Date.now(),
+    taxPrice: 0,
+    discount: 0,
+    net: 0,
+    netNoDiscount: 0,
+    total: 0,
+    totalPercentage: 0,
+    focused: false,
     title: "Lorem ipsum dolor sit amet",
     text: "<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.</p>",
     quantity: 5,
@@ -77,6 +102,14 @@ offer.data.positions = [
     unit: "hrs",
   },
   {
+    id: Date.now(),
+    taxPrice: 0,
+    discount: 0,
+    net: 0,
+    netNoDiscount: 0,
+    total: 0,
+    totalPercentage: 0,
+    focused: false,
     title: "Lorem ipsum dolor sit amet",
     text: "<p>Lorem ipsum dolor sit amet, consectetuer</p>",
     quantity: 10,
@@ -88,6 +121,7 @@ offer.data.positions = [
 offer.data.taxOption = {
   title: "Apply taxes",
   applicable: true,
+  default: true,
 };
 offer.data.discountsCharges = [
   {

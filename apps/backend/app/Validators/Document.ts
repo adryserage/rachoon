@@ -10,8 +10,8 @@ class DocumentValidator {
     invoiceId: schema.number.optional(),
     recurringInvoice: schema.object.optional().anyMembers(),
     data: schema.object().members({
-      positions: schema.array().members(schema.object().anyMembers()),
-      discountsCharges: schema.array.optional().members(schema.object().anyMembers()),
+      positions: schema.array().anyMembers(),
+      discountsCharges: schema.array.optional().anyMembers(),
       taxes: schema.object().anyMembers(),
       taxOption: schema.object().anyMembers(),
       date: schema.date(),

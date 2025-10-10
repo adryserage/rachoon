@@ -1,11 +1,9 @@
-import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Document from 'App/Models/Document'
 import NumberService from './Number'
 import { DateTime } from 'luxon'
 
 export default class DocumentService {
   public static async duplicate(
-    ctx: HttpContextContract,
     id: number,
     organizationid: number,
     recurringId: number | null = null

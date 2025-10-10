@@ -80,7 +80,7 @@ class Template implements TemplateType {
   }
 
   public errors(): string[] {
-    const e = [];
+    const e: string[] = [];
     if (this.title === "") {
       e.push("Name is required");
     }
