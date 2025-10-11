@@ -184,7 +184,6 @@ class Document implements DocumentType {
     if (option === "partial") {
       offer.data.positions.forEach((position) => {
         let p = { ...position };
-        console.log(p);
         if (valueType === "percent") p.price = (p.price / 100) * value;
         if (valueType === "fixed")
           p.price = ((value / 100) * p.totalPercentage) / p.quantity;

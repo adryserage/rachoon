@@ -4,9 +4,19 @@ import HashIDs from './hashids'
 
 export default class OrganizationHelper {
   public static async getFromContext(ctx: HttpContextContract) {
+    if (!process.env.CLOUD && process.env.NODE_ENV !== 'development') {
+      const organization = await Organization.query().orderBy('createdAt', 'asc').firstOrFail()
+      return {
+        slug: organization.slug,
+        name: organization.name,
+        id: HashIDs.encode(organization.id),
+        logo: organization.data.logo,
+      }
+    }
     const fromOrigin = await this.getFromOrigin(ctx)
     const fromHeader = await this.getFromHeader(ctx)
     const fromParam = await this.getFromParam(ctx)
+
     return fromOrigin || fromHeader || fromParam
   }
 

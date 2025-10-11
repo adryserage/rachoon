@@ -10,9 +10,9 @@ class AuthStore {
     this.loading.value = false;
   };
 
-  loginEmailPassword = async (email: string, password: string) => {
+  loginEmailPassword = async (email: string, password: string, slug: string = "") => {
     this.loadingLogin.value = true;
-    const res = await useApi().auth().loginEmailPassword(email, password);
+    const res = await useApi().auth(slug).loginEmailPassword(email, password);
     if (res.token) {
       localStorage.setItem("auth-token", res.token);
       await useProfile().init();

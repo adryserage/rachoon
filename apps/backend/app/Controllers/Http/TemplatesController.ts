@@ -23,7 +23,6 @@ export default class TemplatessController {
       .andWhere((q) => {
         q.where({ organizationId: ctx.auth.user?.organizationId }).orWhere({
           organizationId: null,
-          premium: false,
         })
       })
       .orderBy('organization_id', 'desc')
@@ -88,7 +87,7 @@ export default class TemplatessController {
         organizationId: ctx.auth.user?.organizationId,
         default: true,
       })
-      .orWhere({ organizationId: null, premium: false, default: true })
+      .orWhere({ organizationId: null, default: true })
 
       .firstOrFail()
   }

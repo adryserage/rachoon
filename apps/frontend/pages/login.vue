@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { getActivePinia } from "pinia";
 getActivePinia()._s.forEach((s) => s.$reset());
 
