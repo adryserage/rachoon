@@ -9,7 +9,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiURL: process.env.API_URL || "https://api.rachoon.work",
+      apiURL: process.env.API_URL || "http://localhost:3333",
     },
   },
   modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss"],
