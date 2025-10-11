@@ -12,11 +12,7 @@ const { isOpen } = useDrawer();
       <label for="app-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
 
       <div class="flex flex-col min-h-dvh max-h-dvh h-dvh bg-base-100 w-80 border-r border-base-300">
-        <div class="logo mt-2 ml-3">
-          <img src="@/assets/logo.png" class="h-10 w-auto inline-block align-middle" />
-          <h2 class="ml-2 inline-block align-middle">rachoon</h2>
-          <span class="text-xs opacity-50 ml-3">v1.1.1</span>
-        </div>
+        <Logo />
         <div class="divider m-0 p-0"></div>
         <div class="overflow-y-auto">
           <NavigationMain />

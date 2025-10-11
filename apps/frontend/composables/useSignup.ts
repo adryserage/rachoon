@@ -1,3 +1,4 @@
+import { watchDebounced } from "@vueuse/core";
 import slugify from "slugify";
 
 export default defineStore("signup", () => {
@@ -16,6 +17,7 @@ export default defineStore("signup", () => {
   });
 
   const slug = ref("your-slug");
+  const slugInUse = <Ref<boolean | null>>ref(null);
 
   watch(organization.value, () => {
     if (organization.value.slug) {
@@ -24,6 +26,30 @@ export default defineStore("signup", () => {
       slug.value = slugify(organization.value.name || "", { lower: true });
     }
   });
+
+  watch(slug, () => {
+    if (slug.value === "") {
+      slugInUse.value = null;
+      return;
+    }
+  });
+
+  watchDebounced(
+    slug,
+    async () => {
+      if (slug.value === "") {
+        slugInUse.value = null;
+        return;
+      }
+      const org = await useApi().organization().getCurrent(slug.value);
+      if (org?.slug) {
+        slugInUse.value = true;
+      } else {
+        slugInUse.value = false;
+      }
+    },
+    { debounce: 300 },
+  );
 
   const getURIParts = (url) => {
     const matches = url.match(/^(\w+?:\/\/)?([\w-\.]+(?=\/?))?:?(\d*)?([^:]*)/);
@@ -61,6 +87,7 @@ export default defineStore("signup", () => {
     user,
     organization,
     slug,
+    slugInUse,
     signUp,
   };
 });

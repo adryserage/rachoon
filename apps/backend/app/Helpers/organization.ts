@@ -6,7 +6,25 @@ export default class OrganizationHelper {
   public static async getFromContext(ctx: HttpContextContract) {
     const fromOrigin = await this.getFromOrigin(ctx)
     const fromHeader = await this.getFromHeader(ctx)
-    return fromOrigin || fromHeader
+    const fromParam = await this.getFromParam(ctx)
+    return fromOrigin || fromHeader || fromParam
+  }
+
+  public static async getFromParam(ctx: HttpContextContract) {
+    const slug = ctx.request.qs()['slug']
+
+    if (!slug) {
+      return null
+    }
+    const organization = await Organization.query().where({ slug: slug }).first()
+    if (organization) {
+      return {
+        slug: slug,
+        name: organization.name,
+        id: HashIDs.encode(organization.id),
+        logo: organization.data.logo,
+      }
+    }
   }
 
   public static async getFromHeader(ctx: HttpContextContract) {

@@ -1,10 +1,12 @@
 export default defineNuxtRouteMiddleware((to, from) => {
   if (!useAuth().key() && !["/login", "/signup"].includes(to.path)) {
-    return navigateTo("login");
+    useRouter().replace("/login");
+    return;
   }
 
   if (useAuth().key() && ["/login", "/signup"].includes(to.path)) {
-    return navigateTo("");
+    useRouter().replace("/");
+    return;
   }
 
   if (
@@ -19,6 +21,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     useProfile().me.organization.data.address.country === ""
   ) {
     useToast(`Hey, ${useProfile().me.data.username}`, "Please setup your organiztion address first before proceeding.", "warning");
-    return useRouter().replace("/settings/organization");
+    useRouter().replace("/settings/organization");
+    return;
   }
 });

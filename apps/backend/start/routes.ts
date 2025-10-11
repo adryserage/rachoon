@@ -20,9 +20,8 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.resource('', 'RootController').only(['index'])
-
 Route.group(() => {
+  Route.resource('', 'RootController').only(['index'])
   Route.resource('auth', 'AuthController')
     .only(['store', 'destroy'])
     .middleware({ destroy: ['auth'] })

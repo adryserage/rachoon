@@ -41,8 +41,9 @@ export default class HttpClient {
 
       return { body: camelcaseKeys(res._data as any, { deep: true }), headers: res.headers };
     } catch (e) {
-      console.error(e);
-      this.notifyError(e);
+      if (notify) {
+        this.notifyError(e);
+      }
 
       return {};
     }

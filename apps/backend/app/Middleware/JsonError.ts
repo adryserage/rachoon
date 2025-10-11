@@ -7,7 +7,7 @@ export default class JsonError {
     const body = response.getBody()
     if (code >= 400) {
       response.json({
-        error: body,
+        errors: [{ message: body }],
         code: code,
       })
     }

@@ -160,10 +160,6 @@ table.datatable tr {
   }
 }
 
-.label-text {
-  @apply opacity-50;
-}
-
 input[type="text"]:focus {
   @apply text-info;
   @apply opacity-100;

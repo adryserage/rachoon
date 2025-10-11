@@ -179,7 +179,7 @@ export default function useApi() {
     },
     organization: (endpoint: string = "/api/organizations") => {
       return {
-        getCurrent: async () => (await useHttp.get("/")).body,
+        getCurrent: async (slug: string = "") => (await useHttp.get(`/api${slug !== "" ? `?slug=${slug}` : ""}`, false)).body,
         save: async (organization: OrganizationType) =>
           await useHttp.post(endpoint, organization, {
             title: "Settings",
