@@ -2,8 +2,8 @@ name: Build & Deploy
 run-name: Deploying
 on:
   push:
-    tags:
-      - "*"
+    branches:
+      - main
 jobs:
   Deploy:
     runs-on: ubuntu-latest
