@@ -53,7 +53,7 @@ export default class Document extends BaseAppModel {
   @beforeSave()
   public static async calculate(document: Document) {
     const d = new CommonDocument(document.serialize())
-    d.calculate()
+    d.rebuild()
     document.data = d.data as DocumentData
   }
   @column({ isPrimary: true, serialize: (val) => HashIDs.encode(val) })

@@ -1,12 +1,11 @@
 import { Client, type ClientType } from "~~/models/client";
 import { DCType, Document, DocumentStatus, DocumentType, Recurring, ValueType, type TaxOption, ConvertOption } from "~~/models/document";
 import Helpers from "@repo/common/Helpers";
+import { DateTime } from "luxon";
 
-import * as dateFns from "date-fns";
 import _ from "lodash";
 import type { Template } from "~/models/template";
 import Base from "./_base";
-import { reactive } from "vue";
 
 class DocumentStore extends Base<Document> {
   clients = ref<Client[]>([]);
@@ -162,9 +161,11 @@ class DocumentStore extends Base<Document> {
       this.item.value.number = await useApi().number(this.docType()).get();
       r(true);
     });
-    this.item.value.data.dueDate = dateFns.add(this.item.value.data.date, {
-      days: useProfile().me.organization.settings[this.type()].dueDays,
-    });
+
+    this.item.value.data.dueDate = DateTime.fromJSDate(this.item.value.data.dueDate)
+      .plus({ days: useProfile().me.organization.settings[this.type()].dueDays })
+      .toJSDate();
+
     this.item.value.data.taxOption = useSettings().settings.taxes.options.filter((o) => o.default)[0];
 
     if (this.type() === "reminders") {

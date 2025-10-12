@@ -1,4 +1,3 @@
-import * as dateFns from "date-fns";
 import { ValueType, type DiscountCharge, type TaxOption, type TaxRate, DCType } from "./document";
 import _ from "lodash";
 interface SettingsData {

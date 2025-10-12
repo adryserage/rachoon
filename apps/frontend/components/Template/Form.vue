@@ -26,15 +26,20 @@ const vars = ref(JSON.stringify(variables, null, 2));
     <div>
       <FormHeader title="Template Editor" icon="fa-palette">
         <template #buttons>
-          <Preview :templateId="useRoute().params['id'] as string" example="invoice" />
+          <div class="tooltip tooltip-bottom" data-tip="Preview">
+            <Preview :templateId="useRoute().params['id'] as string" example="invoice" />
+          </div>
+          <div class="tooltip tooltip-bottom" data-tip="Duplicate">
+            <button type="button" @click="controller().duplicate(controller().item.id)" class="btn btn-sm btn-ghost btn-circle">
+              <FaIcon icon="fa-solid fa-copy" />
+            </button>
+          </div>
 
-          <button type="button" @click="controller().duplicate(controller().item.id)" class="btn btn-sm btn-ghost btn-circle">
-            <FaIcon icon="fa-solid fa-copy" />
-          </button>
           <label v-if="!controller().item.isGlobal" type="button" class="btn btn-sm btn-ghost text-error" @click="controller().delete()">
             <FaIcon icon="fa-solid fa-close" />
             Delete
           </label>
+
           <button v-if="!controller().item.isGlobal" type="submit" class="btn btn-sm btn-neutral">
             <FaIcon icon="fa-solid fa-save" />
             {{ controller().item.id === "" ? "Create Template" : "Save" }}

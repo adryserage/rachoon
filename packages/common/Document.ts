@@ -1,7 +1,7 @@
-import * as dateFns from "date-fns";
 import { Client } from "./Client";
 import _ from "lodash";
 import Helpers from "./Helpers";
+import { DateTime } from "luxon";
 
 export enum DocumentStatus {
   Draft = 0,
@@ -154,6 +154,10 @@ class Document {
       this.invoices = (json.invoices || []).map((i) => new Document(i));
       this.data.date = new Date(Date.parse(json.data.date.toString()));
       this.data.dueDate = new Date(Date.parse(json.data.dueDate.toString()));
+      if (json.updatedAt && json.createdAt) {
+        this.updatedAt = new Date(Date.parse(json.updatedAt.toString()));
+        this.createdAt = new Date(Date.parse(json.createdAt.toString()));
+      }
       if (json.recurringInvoice) {
         this.recurringInvoice = new Recurring(json.recurringInvoice);
       }
@@ -212,9 +216,11 @@ class Document {
   }
 
   rebuild() {
-    this.data.dueDays = dateFns.differenceInCalendarDays(
-      this.data.dueDate,
-      this.data.date,
+    this.data.dueDays = Math.round(
+      DateTime.fromJSDate(this.data.dueDate).diff(
+        DateTime.fromJSDate(this.data.date),
+        "days",
+      ).days,
     );
     if (this.data.positions.length === 0) {
       this.addPosition();

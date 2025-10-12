@@ -14,7 +14,8 @@ export default class DocumentService {
     const duplicate = new Document()
     duplicate.fill(d.$attributes)
     duplicate.number = await NumberService.document(organizationid, d.type)
-    duplicate.data.date = new Date()
+    duplicate.data.date = now
+    duplicate.data.dueDate = now.plus({ days: duplicate.data.dueDays })
 
     delete duplicate.$attributes.id
     duplicate.$attributes.createdAt = now

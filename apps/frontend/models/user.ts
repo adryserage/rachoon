@@ -2,6 +2,7 @@ import { Organization } from "~~/models/organization";
 import _ from "lodash";
 import type { IBase } from "@repo/common/Base";
 import { UserRole } from "@repo/common/User";
+import Helpers from "@repo/common/Helpers";
 interface UserData {
   username: string;
   fullName: string;
@@ -43,8 +44,12 @@ class User implements UserType, IBase {
 
   constructor(json?: any) {
     if (json) {
-      _.merge(this, json);
-      this.organization = new Organization(this.organization);
+      Helpers.merge(this, json);
+      this.organization = new Organization(json.organization);
+      if (json.updatedAt && json.createdAt) {
+        this.updatedAt = new Date(Date.parse(json.updatedAt.toString()));
+        this.createdAt = new Date(Date.parse(json.createdAt.toString()));
+      }
     }
   }
   public toJSON() {

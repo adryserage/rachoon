@@ -1,4 +1,5 @@
 import _ from "lodash";
+import Helpers from "./Helpers";
 
 export interface ClientData {
   info: {
@@ -70,7 +71,11 @@ class Client implements ClientType {
 
   public constructor(json?: ClientType) {
     if (json) {
-      _.merge(this, json);
+      Helpers.merge(this, json);
+      if (json.updatedAt && json.createdAt) {
+        this.updatedAt = new Date(Date.parse(json.updatedAt.toString()));
+        this.createdAt = new Date(Date.parse(json.createdAt.toString()));
+      }
     }
   }
 

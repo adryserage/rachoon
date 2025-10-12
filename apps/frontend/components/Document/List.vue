@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Document, DocumentStatus, DocumentType } from "~~/models/document";
-import * as datefns from "date-fns";
+import cronstrue from "cronstrue";
 
 const props = defineProps({
   clientId: { type: String, default: "" },
@@ -53,7 +53,7 @@ const getStatusTooltip = (row: Document): string => {
 
 const columns = [
   { label: "# Number", field: "number", class: "", width: "250" },
-  { label: "", field: "recurring", class: "text-center", width: "60" },
+  { label: "", field: "hints", class: "text-center", width: "60" },
   { label: "Client", field: "client", class: "", width: "200" },
   { label: "Status", field: "status", class: "text-center", width: "100" },
   { label: "Due Date", field: "data.dueDate", class: "", width: "120" },
@@ -107,24 +107,31 @@ const columns = [
         <br />
         <small class="opacity-50">last modified {{ useFormat.date(row.updatedAt) }}</small>
       </template>
-      <template #recurring="{ row }">
-        <span :class="`iconbadge ${row.isRecurring ? 'warning' : ''}`" v-if="row.isRecurring || row.isFromRecurring">
-          <NuxtLink :href="`/invoices/${row.recurringId}`" v-if="row.isFromRecurring">
-            <FaIcon icon="fa-solid fa-repeat" />
-          </NuxtLink>
-          <FaIcon icon="fa-solid fa-repeat" v-else />
-        </span>
+      <template #hints="{ row }">
+        <div
+          class="tooltip"
+          :data-tip="`${row.isRecurring ? `Recurs ${cronstrue.toString(row.recurringInvoice.cron, { use24HourTimeFormat: true })}` : `Created from ${row.invoice.id}`}`"
+          v-if="row.isRecurring || row.isFromRecurring"
+        >
+          <span :class="`iconbadge ${row.isRecurring ? (row.recurringInvoice.active ? 'success' : 'warning') : ''}`">
+            <NuxtLink :href="`/invoices/${row.recurringId}`" v-if="row.isFromRecurring">
+              <FaIcon icon="fa-solid fa-repeat" />
+            </NuxtLink>
+            <FaIcon icon="fa-solid fa-repeat" v-else />
+          </span>
+        </div>
         <span v-if="row.invoices.length > 0" class="iconbadge">
           <NuxtLink :href="`/invoices/?offerId=${row.id}`">
             <FaIcon icon="fa-solid fa-file-invoice" />
           </NuxtLink>
         </span>
-
-        <span v-if="row.offer?.id !== ''" class="iconbadge">
-          <NuxtLink :href="`/offers/${row.offer?.id}`">
-            <FaIcon icon="fa-solid fa-file-export" />
-          </NuxtLink>
-        </span>
+        <div v-if="row.offer?.id !== ''" class="tooltip" :data-tip="`Invoiced from: ${row.offer?.number}`">
+          <span class="iconbadge">
+            <NuxtLink :href="`/offers/${row.offer?.id}`">
+              <FaIcon icon="fa-solid fa-file-export" />
+            </NuxtLink>
+          </span>
+        </div>
       </template>
       <template #client="{ row }">
         {{ row.client.name }}

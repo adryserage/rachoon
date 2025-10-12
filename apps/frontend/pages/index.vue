@@ -1,5 +1,4 @@
 <script setup>
-import * as dateFns from "date-fns";
 definePageMeta({
   layout: "core",
 });

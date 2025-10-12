@@ -1,3 +1,4 @@
+import Helpers from "@repo/common/Helpers";
 import _ from "lodash";
 interface TemplateData {
   columns: {
@@ -75,7 +76,11 @@ class Template implements TemplateType {
 
   public constructor(json?: TemplateType) {
     if (json) {
-      _.merge(this, json);
+      Helpers.merge(this, json);
+      if (json.updatedAt && json.createdAt) {
+        this.updatedAt = new Date(Date.parse(json.updatedAt.toString()));
+        this.createdAt = new Date(Date.parse(json.createdAt.toString()));
+      }
     }
   }
 

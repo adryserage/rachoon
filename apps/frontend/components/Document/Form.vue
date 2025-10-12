@@ -41,37 +41,56 @@ const convert = () => {
       icon="fa-file-invoice-dollar"
     >
       <template #buttons>
-        <label
+        <div
+          class="tooltip tooltip-bottom"
+          data-tip="Recurring settings"
           v-if="controller().item.isRecurring || (controller().isNew() && !controller().isOfferToConvert())"
-          :class="`btn btn-sm btn-ghost btn-circle ${controller().recurring.active ? 'text-green-500 bg-green-900 bg-opacity-15' : ''}`"
-          @click="recurringModal.showModal()"
         >
-          <FaIcon icon="fa-solid fa-repeat" />
-        </label>
+          <label
+            :class="`btn btn-sm btn-ghost btn-circle ${controller().recurring.active ? 'text-green-500 bg-green-900 bg-opacity-15' : ''}`"
+            @click="recurringModal.showModal()"
+          >
+            <FaIcon icon="fa-solid fa-repeat" />
+          </label>
+        </div>
 
-        <Preview />
+        <div class="tooltip tooltip-bottom" data-tip="Preview">
+          <Preview />
+        </div>
 
-        <label class="btn btn-sm btn-ghost btn-circle" @click="offerToInvoiceModal.showModal()" v-if="controller().isOfferToConvert()">
-          <FaIcon icon="fa-solid fa-file-export" />
-        </label>
+        <div class="tooltip tooltip-bottom" data-tip="Create invoice" v-if="controller().isOfferToConvert()">
+          <label class="btn btn-sm btn-ghost btn-circle" @click="offerToInvoiceModal.showModal()">
+            <FaIcon icon="fa-solid fa-file-export" />
+          </label>
+        </div>
 
-        <label class="btn btn-sm btn-ghost" @click="controller().download()" v-if="!controller().isNew() && controller().mustSave <= 1">
-          <FaIcon icon="fa-solid fa-file-pdf" />
-        </label>
-        <label v-if="!controller().isNew()" class="btn btn-sm btn-ghost btn-circle" @click="controller().duplicate(controller().item.id)">
-          <FaIcon icon="fa-solid fa-copy " />
-        </label>
+        <div class="tooltip tooltip-bottom" data-tip="Download PDF">
+          <label class="btn btn-sm btn-ghost" @click="controller().download()" v-if="!controller().isNew() && controller().mustSave <= 1">
+            <FaIcon icon="fa-solid fa-file-pdf" />
+          </label>
+        </div>
 
-        <NuxtLink
-          :to="`/reminders/new?invoice=${controller().item.id}`"
-          class="btn btn-sm btn-ghost btn-circle"
-          v-if="!controller().isNew() && controller().isInvoice()"
-        >
-          <FaIcon icon="fa-solid fa-file-lines" />
-        </NuxtLink>
-        <label class="btn btn-sm btn-ghost btn-circle cursor-pointer" @click="settingsModal.showModal()">
-          <FaIcon icon="fa-solid fa-gear" />
-        </label>
+        <div class="tooltip tooltip-bottom" data-tip="Duplicate">
+          <label v-if="!controller().isNew()" class="btn btn-sm btn-ghost btn-circle" @click="controller().duplicate(controller().item.id)">
+            <FaIcon icon="fa-solid fa-copy " />
+          </label>
+        </div>
+
+        <div class="tooltip tooltip-bottom" data-tip="Create reminder">
+          <NuxtLink
+            :to="`/reminders/new?invoice=${controller().item.id}`"
+            class="btn btn-sm btn-ghost btn-circle"
+            v-if="!controller().isNew() && controller().isInvoice()"
+          >
+            <FaIcon icon="fa-solid fa-file-lines" />
+          </NuxtLink>
+        </div>
+
+        <div class="tooltip tooltip-bottom" data-tip="Options">
+          <label class="btn btn-sm btn-ghost btn-circle cursor-pointer" @click="settingsModal.showModal()">
+            <FaIcon icon="fa-solid fa-gear" />
+          </label>
+        </div>
 
         <label class="btn btn-sm btn-ghost text-error gap-2" v-if="!controller().isNew()" @click="controller().delete()">
           <FaIcon icon="fa-solid fa-close" />
