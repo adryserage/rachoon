@@ -6,6 +6,7 @@ const props = defineProps({
   clientId: { type: String, default: "" },
   list: { type: Array as () => Document[], default: null },
   type: { type: String, default: null, required: false },
+  canFilter: { type: Boolean, default: true },
   showHeader: { type: Boolean, default: true },
 });
 
@@ -92,7 +93,7 @@ const columns = [
     <DataTable
       :columns="columns"
       :rows="list || controller().items"
-      :sortableFields="['number', 'data.dueDate', 'data.net', 'data.total', 'status']"
+      :sortableFields="$props.canFilter ? ['number', 'data.dueDate', 'data.net', 'data.total', 'status'] : []"
       :loading="controller().refresh"
       @doLoadMore="controller().doLoadMore()"
       :showLoadMore="controller().hasMore()"
@@ -101,7 +102,7 @@ const columns = [
       <template #number="{ row }">
         <div class="indicator">
           <span class="indicator-item badge badge-xs badge-error" v-if="row.totalReminders > 0">{{ row.totalReminders }}</span>
-          <NuxtLink :href="'/' + $props.type || controller().type() + '/' + row.id" class="link">
+          <NuxtLink :href="`/${$props.type || controller().type()}/${row.id}`" class="link">
             {{ row.number }}
           </NuxtLink>
         </div>
@@ -162,7 +163,7 @@ const columns = [
       <template #actions="{ row }">
         <ContextMenu>
           <li>
-            <NuxtLink :to="`/invoices/${row.id}`">
+            <NuxtLink :to="`/${controller().type()}/${row.id}`">
               <FaIcon icon="fa-regular fa-edit" />
               Edit {{ controller().singularType(true) }}
             </NuxtLink>

@@ -68,23 +68,27 @@ useDashboard().get();
         </div>
       </div>
     </div>
+
     <div class="mt-10" v-if="useDashboard().dashboard.invoices.pending.length > 0">
       <div class="prose mb-5 mx-5">
         <h2 class="">Pending invoices</h2>
       </div>
-      <DocumentList :showHeader="false" :list="useDashboard().dashboard.invoices.pending" type="invoices" />
+      <DocumentList :canFilter="false" :showHeader="false" :list="useDashboard().dashboard.invoices.pending" type="invoices" />
+      <div class="mx-5 mt-5 text-right"><NuxtLink to="/invoices" class="btn btn-xs btn-neutral no-underline">View all</NuxtLink></div>
     </div>
     <div class="mt-10" v-if="useDashboard().dashboard.offers.pending.length > 0">
       <div class="prose mb-5 mx-5">
         <h2 class="">Pending Offers</h2>
       </div>
-      <DocumentList :showHeader="false" :list="useDashboard().dashboard.offers.pending" type="offers" />
+      <DocumentList :canFilter="false" :showHeader="false" :list="useDashboard().dashboard.offers.pending" type="offers" />
+      <div class="mx-5 mt-5 text-right"><NuxtLink to="/offers" class="btn btn-xs btn-neutral no-underline">View all</NuxtLink></div>
     </div>
     <div class="mt-10" v-if="useDashboard().dashboard.reminders.pending.length > 0">
       <div class="prose mb-5 mx-5">
         <h2 class="">Pending reminders</h2>
       </div>
-      <DocumentList :showHeader="false" :list="useDashboard().dashboard.reminders.pending" type="reminders" />
+      <DocumentList :canFilter="false" :showHeader="false" :list="useDashboard().dashboard.reminders.pending" type="reminders" />
+      <div class="mx-5 mt-5 text-right"><NuxtLink to="/reminders" class="btn btn-xs btn-neutral no-underline">View all</NuxtLink></div>
     </div>
   </div>
 </template>
