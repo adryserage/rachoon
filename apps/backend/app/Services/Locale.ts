@@ -28,6 +28,7 @@ export default class Locale {
     'de-AT': {
       'invoice': 'Rechnung',
       'offer': 'Angebot',
+      'reminder': 'Mahnung',
       'number': 'Nummer',
       'no': 'Nr.',
       'date': 'Datum',

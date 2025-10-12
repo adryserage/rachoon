@@ -13,6 +13,7 @@ const copyToClipboard = async () => {
   tokenModal.value.close();
 
   useToast("Clipboard", "Token copied to clipboard", "success");
+  useProfile().getTokens();
 };
 </script>
 
