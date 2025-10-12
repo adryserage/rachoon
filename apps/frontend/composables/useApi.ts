@@ -2,7 +2,7 @@ import { Dashboard } from "~~/models/dashboard";
 import { Client } from "~~/models/client";
 import { Document, DocumentStatus, DocumentType } from "~~/models/document";
 import { Organization } from "~~/models/organization";
-import { User } from "~~/models/user";
+import { Token, User } from "~~/models/user";
 import { Template } from "~/models/template";
 import Paginator from "~/models/paginator";
 
@@ -128,6 +128,14 @@ export default function useApi() {
             return new User((await useHttp.post(`${endpoint}`, user, notif)).body);
           }
         },
+      };
+    },
+
+    tokens: (endpoint: string = "/api/tokens") => {
+      return {
+        new: async (name: string): Promise<Token> => new Token((await useHttp.post(`${endpoint}`, { name: name })).body),
+        getAll: async (): Promise<Token[]> => (await useHttp.get(`${endpoint}`)).body.map((t: any) => new Token(t)),
+        delete: async (id: string) => (await useHttp.del(`${endpoint}/${id}`)).body,
       };
     },
 

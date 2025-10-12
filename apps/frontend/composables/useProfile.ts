@@ -1,22 +1,37 @@
-import { User } from "~~/models/user";
+import { Token, User } from "~~/models/user";
 import _ from "lodash";
+import Helpers from "@repo/common/Helpers";
 
 class ProfileStore {
   me = ref<User>(new User());
   loading = ref(false);
   newPassword = ref(null);
   newPasswordRepeat = ref(null);
+  tokens = ref<Array<Token>>([]);
   init = async () => {
     this.loading.value = true;
     try {
       if (useAuth().key() && this.me.value.id === null) {
-        this.me.value = _.mergeWith(this.me.value, await useApi().profile().get());
-        useTemplate().getDefault();
+        this.me.value = Helpers.merge(this.me.value, await useApi().profile().get());
       }
     } catch (e) {
       console.error("useProfile", e);
     }
     this.loading.value = false;
+  };
+
+  getTokens = async () => {
+    this.tokens.value = await useApi().tokens().getAll();
+  };
+
+  deleteToken = async (token: Token) => {
+    useApp().confirm(async () => {
+      const index = _.findIndex(this.tokens.value, { id: token.id });
+      if (index > -1) {
+        this.tokens.value.splice(index, 1);
+      }
+      await useApi().tokens().delete(token.id!);
+    }, `Are you sure you want to delete token: ${token.name}?`);
   };
 
   save = async (e: Event) => {
@@ -38,19 +53,12 @@ class ProfileStore {
     const data = await readData(file);
     const size = data.length / 1024;
 
-    const { $toast } = useNuxtApp();
-
     if (size > 5) {
-      $toast(`<div class="text-sm"><div><strong>Invalid image</strong></div><div>The image is too large</div></div>`, {
-        theme: "auto",
-        type: "error",
-        position: "bottom-right",
-        dangerouslyHTMLString: true,
-      });
+      useToast("Invalid image", "The image is too large", "error");
 
       return;
     } else {
-      this.me.data.avatar = data as string;
+      this.me.value.data.avatar = data as string;
     }
   };
 

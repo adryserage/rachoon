@@ -23,12 +23,7 @@ class SettingsStore {
     const { $toast } = useNuxtApp();
 
     if (size > 16) {
-      $toast(`<div class="text-sm"><div><strong>Invalid image</strong></div><div>The image is too large</div></div>`, {
-        theme: "auto",
-        type: "error",
-        position: "bottom-right",
-        dangerouslyHTMLString: true,
-      });
+      useToast("Invalid image", "The image is too large", "error");
 
       return;
     } else {

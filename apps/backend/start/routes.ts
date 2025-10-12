@@ -42,7 +42,7 @@ Route.group(() => {
     Route.resource('organizations', 'OrganizationsController').only(['store'])
     Route.resource('render', 'RenderController').only(['store'])
     Route.resource('profile', 'ProfileController').only(['index', 'store'])
-    Route.resource('token', 'TokenController').only(['index'])
+    Route.resource('tokens', 'TokensController').only(['index', 'store', 'destroy'])
   }).middleware(['auth'])
   // TODO: create an internal only middleware, where it checks for a specific header or token
   Route.resource('register', 'RegisterController').only(['store'])

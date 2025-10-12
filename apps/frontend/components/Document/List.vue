@@ -5,6 +5,7 @@ import cronstrue from "cronstrue";
 const props = defineProps({
   clientId: { type: String, default: "" },
   list: { type: Array as () => Document[], default: null },
+  type: { type: String, default: null, required: false },
   showHeader: { type: Boolean, default: true },
 });
 
@@ -100,7 +101,7 @@ const columns = [
       <template #number="{ row }">
         <div class="indicator">
           <span class="indicator-item badge badge-xs badge-error" v-if="row.totalReminders > 0">{{ row.totalReminders }}</span>
-          <NuxtLink :href="'/' + controller().type() + '/' + row.id" class="link">
+          <NuxtLink :href="'/' + $props.type || controller().type() + '/' + row.id" class="link">
             {{ row.number }}
           </NuxtLink>
         </div>

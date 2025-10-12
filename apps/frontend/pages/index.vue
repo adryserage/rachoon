@@ -84,7 +84,7 @@ useDashboard().get();
       <div class="prose mb-5 mx-5">
         <h2 class="">Pending reminders</h2>
       </div>
-      <DocumentList :showHeader="false" :list="useDashboard().dashboard.reminders.pending" type="invoices" />
+      <DocumentList :showHeader="false" :list="useDashboard().dashboard.reminders.pending" type="reminders" />
     </div>
   </div>
 </template>
