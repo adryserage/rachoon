@@ -55,7 +55,6 @@ class ProfileStore {
 
     if (size > 5) {
       useToast("Invalid image", "The image is too large", "error");
-
       return;
     } else {
       this.me.value.data.avatar = data as string;
