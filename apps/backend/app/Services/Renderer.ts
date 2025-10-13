@@ -39,9 +39,9 @@ export default class Renderer {
 
     const currency = (value: any): string => Format.toCurrency(value, loc, cur)
 
-    const date = (value: any): string => Format.date(value, loc)
+    const date = (value: any): string => Format.date(new Date(value), loc)
 
-    const longDate = (value: any): string => Format.longDate(value, loc)
+    const longDate = (value: any): string => Format.longDate(new Date(value), loc)
 
     return nunjucks.renderString(template.html, {
       document: data,
