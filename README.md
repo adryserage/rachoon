@@ -58,6 +58,8 @@ services:
   rachoon:
     image: ghcr.io/ad-on-is/rachoon
     container_name: rachoon
+    ports:
+      - 8080:8080
     environment:
       - HOST=0.0.0.0
       - APP_KEY=<some-app-key>
@@ -69,7 +71,7 @@ services:
       - PG_USER=<pg-user>
       - PG_PASSWORD=<pg-password>
       - PG_DB_NAME=<pg-database>
-      - BASE_URL=https://rachoon.example.com
+      - BASE_URL=http://localhost:8080
 
   gotenberg:
     image: gotenberg/gotenberg:8
@@ -77,3 +79,7 @@ services:
 ```
 
 ## First steps
+
+- Visit: <http://localhost:8080/signup>
+- Create your account
+- Start invoicing
