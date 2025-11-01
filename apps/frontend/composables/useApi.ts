@@ -234,7 +234,7 @@ export default function useApi() {
     auth: (slug: string = "", endpoint: string = "/api/auth") => {
       return {
         loginEmailPassword: async (email: string, password: string) =>
-          (await useHttp.post(`${endpoint}${slug !== "" ? `?slug=${slug}` : ""}`, { email: email, password: password })).body as {
+          (await useHttp.post(`${endpoint}${slug !== "" ? `?slug=${slug}` : ""}`, { email: email, password: password }, true)).body as {
             token?: string;
           },
         logout: async (id: string) => (await useHttp.del(`${endpoint}/${id}`)).body,
