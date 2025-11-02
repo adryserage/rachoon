@@ -54,6 +54,15 @@ const vars = ref(JSON.stringify(variables, null, 2));
         </li>
       </ul>
 
+      <div class="w-full prose text-center my-5" v-if="controller().item.isGlobal">
+        <h3 class="m-0 p-0 text-warning">Template is Read-Only!</h3>
+        <p>This template can’t be modified. To make changes, please create a copy instead.</p>
+        <label class="btn btn-sm btn-neutral gap-2 no-underline" @click="controller().duplicate(controller().item.id)">
+          <FaIcon icon="fa-solid fa-copy" />
+          Create copy
+        </label>
+      </div>
+
       <FormSection title="Template Name" description="Give your template a unique name.">
         <div>
           <label class="label w-full max-w-xs">
@@ -67,11 +76,17 @@ const vars = ref(JSON.stringify(variables, null, 2));
             v-model="controller().item.title"
             placeholder="Template name"
             required
+            :disabled="controller().item.isGlobal"
             class="input input-bordered input-sm w-full max-w-xs"
           />
           <div class="form-control w-24 mt-3">
             <label class="cursor-pointer label">
-              <input type="checkbox" v-model="controller().item.default" class="checkbox checkbox-xs" />
+              <input
+                type="checkbox"
+                v-model="controller().item.default"
+                class="checkbox checkbox-xs"
+                :disabled="controller().item.isGlobal"
+              />
               <span class="label-text">Default</span>
             </label>
           </div>
@@ -92,25 +107,52 @@ const vars = ref(JSON.stringify(variables, null, 2));
         </div>
       </FormSection>
       <FormSection title="Custom Text before table" description="Add custom text before the item table">
-        <Editor v-model="controller().item.data.texts.beforeTable" placeholder="Custom text before table" />
+        <Editor
+          v-model="controller().item.data.texts.beforeTable"
+          placeholder="Custom text before table"
+          :disabled="controller().item.isGlobal"
+        />
       </FormSection>
       <FormSection title="Custom Text after table" description="Add custom text after the item table">
-        <Editor v-model="controller().item.data.texts.afterTable" placeholder="Custom text after table" />
+        <Editor
+          v-model="controller().item.data.texts.afterTable"
+          placeholder="Custom text after table"
+          :disabled="controller().item.isGlobal"
+        />
       </FormSection>
       <div class="flex gap-3 px-10 mb-14 mt-5 w-full">
-        <Editor class="w-1/3 h-72" v-model="controller().item.data.columns.first" title="Column First" placeholder="Text of first column" />
+        <Editor
+          class="w-1/3 h-72"
+          v-model="controller().item.data.columns.first"
+          title="Column First"
+          placeholder="Text of first column"
+          :disabled="controller().item.isGlobal"
+        />
         <Editor
           class="w-1/3 h-72"
           v-model="controller().item.data.columns.second"
+          :disabled="controller().item.isGlobal"
           title="Column Second"
           placeholder="Text of second column"
         />
-        <Editor class="w-1/3 h-72" v-model="controller().item.data.columns.third" title="Column Third" placeholder="Text of third column" />
+        <Editor
+          class="w-1/3 h-72"
+          v-model="controller().item.data.columns.third"
+          title="Column Third"
+          placeholder="Text of third column"
+          :disabled="controller().item.isGlobal"
+        />
       </div>
       <div class="divider"></div>
 
       <FormSection title="Custom HTML" description="Customize the HTML structure of your template.">
-        <v-ace-editor v-model:value="controller().item.html" lang="nunjucks" theme="dracula" style="height: 800px" />
+        <v-ace-editor
+          v-model:value="controller().item.html"
+          lang="nunjucks"
+          theme="dracula"
+          style="height: 800px"
+          :readonly="controller().item.isGlobal"
+        />
       </FormSection>
       <FormSection title="Variables" description="Available variables for your templates.">
         <v-ace-editor :readonly="true" v-model:value="vars" lang="json" theme="dracula" style="height: 800px" />

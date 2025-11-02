@@ -6,6 +6,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 const props = defineProps({
   modelValue: { type: String, default: "" },
   placeholder: { type: String, default: "" },
+  disabled: { type: Boolean, default: false },
   title: { type: String, default: "" },
 });
 const emit = defineEmits(["update:modelValue"]);
@@ -17,6 +18,7 @@ const editor = useEditor({
     }),
   ],
   content: props.modelValue,
+  editable: !props.disabled,
   onUpdate: () => {
     emit("update:modelValue", editor.value.getHTML());
   },
@@ -35,22 +37,22 @@ const editor = useEditor({
     </div>
     <div class="h-full p-2 rounded-lg">
       <div>
-        <button class="btn btn-square btn-xs mr-1" @click="editor.commands.toggleBold()">
+        <button class="btn btn-square btn-xs mr-1" @click="editor.commands.toggleBold()" :disabled="$props.disabled">
           <FaIcon icon="fa-solid fa-bold" />
         </button>
-        <button class="btn btn-square btn-xs mr-1" @click="editor.commands.toggleItalic()">
+        <button class="btn btn-square btn-xs mr-1" @click="editor.commands.toggleItalic()" :disabled="$props.disabled">
           <FaIcon icon="fa-solid fa-italic" />
         </button>
-        <button class="btn btn-square btn-xs mr-1 ml-5" @click="editor.commands.toggleHeading()">
+        <button class="btn btn-square btn-xs mr-1 ml-5" @click="editor.commands.toggleHeading()" :disabled="$props.disabled">
           <FaIcon icon="fa-solid fa-heading" />
         </button>
-        <button class="btn btn-square btn-xs mr-1" @click="editor.commands.toggleBlockquote()">
+        <button class="btn btn-square btn-xs mr-1" @click="editor.commands.toggleBlockquote()" :disabled="$props.disabled">
           <FaIcon icon="fa-solid fa-quote-left" />
         </button>
-        <button class="btn btn-square btn-xs mr-1 ml-5" @click="editor.commands.toggleBulletList()">
+        <button class="btn btn-square btn-xs mr-1 ml-5" @click="editor.commands.toggleBulletList()" :disabled="$props.disabled">
           <FaIcon icon="fa-solid fa-list" />
         </button>
-        <button class="btn btn-square btn-xs mr-1" @click="editor.commands.toggleOrderedList()">
+        <button class="btn btn-square btn-xs mr-1" @click="editor.commands.toggleOrderedList()" :disabled="$props.disabled">
           <FaIcon icon="fa-solid fa-list-ol" />
         </button>
       </div>

@@ -14,6 +14,7 @@ defineProps({
         v-maska="{ mask: '!#HHHHHH', tokens: { H: { pattern: /[0-9a-fA-F]/, uppercase: true } } }"
         v-model="useTemplate().item.data.colors[$props.color]"
         class="input input-bordered input-sm w-24"
+        :disabled="useTemplate().item.isGlobal"
       />
       <span
         class="border border-white border-opacity-20"
