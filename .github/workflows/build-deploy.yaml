@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - adryserage
   pull_request:
     branches:
       - main
+      - adryserage
 
 jobs:
   code-quality:
@@ -150,7 +152,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/adryserage') && github.event_name == 'push'
     steps:
       - name: checkout project
         uses: actions/checkout@v4
