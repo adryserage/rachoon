@@ -45,4 +45,4 @@ deploy.sh
 .windsurfrules
 /.windsurfrules
 /.claude
-.windsurf/workflows/codacy-fix-issues.md
+.windsurf/
