@@ -25,7 +25,7 @@ echo "checking if database '$PG_DB_NAME' exists..."
 DB_EXISTS=$(PGPASSWORD=$PG_PASSWORD psql -h "$PG_HOST" -U "$PG_USER" -d postgres -tAc -v dbname="$PG_DB_NAME" "SELECT 1 FROM pg_database WHERE datname=:'dbname'")
 if [ "$DB_EXISTS" != "1" ]; then
   echo "creating database '$PG_DB_NAME'..."
-  PGPASSWORD=$PG_PASSWORD psql -h "$PG_HOST" -U "$PG_USER" -d postgres -c "CREATE DATABASE $PG_DB_NAME"
+  PGPASSWORD=$PG_PASSWORD psql -h "$PG_HOST" -U "$PG_USER" -d postgres -c "CREATE DATABASE \"$PG_DB_NAME\""
   echo "database created successfully"
 else
   echo "database already exists"
