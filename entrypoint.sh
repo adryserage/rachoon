@@ -12,6 +12,28 @@ cd /app/backend/apps/backend || exit
 export PORT=3333
 export NODE_ENV=production
 
+# wait for postgres to be ready
+echo "waiting for postgres to be ready..."
+until PGPASSWORD=$PG_PASSWORD psql -h "$PG_HOST" -U "$PG_USER" -d postgres -c '\q' 2>/dev/null; do
+  echo "postgres is unavailable - sleeping"
+  sleep 1
+done
+echo "postgres is ready"
+
+# create database if it doesn't exist
+echo "checking if database '$PG_DB_NAME' exists..."
+DB_EXISTS=$(PGPASSWORD=$PG_PASSWORD psql -h "$PG_HOST" -U "$PG_USER" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = :'dbname'" -v dbname="$PG_DB_NAME")
+if [ "$DB_EXISTS" != "1" ]; then
+  echo "creating database '$PG_DB_NAME'..."
+  PGPASSWORD=$PG_PASSWORD psql -h "$PG_HOST" -U "$PG_USER" -d postgres -v dbname="$PG_DB_NAME" <<-EOSQL
+		SELECT 'CREATE DATABASE ' || quote_ident(:'dbname')
+		WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = :'dbname')\gexec
+	EOSQL
+  echo "database created successfully"
+else
+  echo "database already exists"
+fi
+
 node ace migration:run --force
 node ace db:seed
 node server.js &
