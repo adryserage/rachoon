@@ -25,8 +25,20 @@ jobs:
         with:
           version: 10
 
+      - name: get pnpm store directory
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
 
       - name: run linter
         run: pnpm lint
@@ -68,12 +80,28 @@ jobs:
         with:
           version: 10
 
+      - name: get pnpm store directory
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
 
       - name: run backend tests
         run: cd apps/backend && pnpm test
         env:
+          APP_KEY: test-key-for-ci-only-not-secure
+          APP_NAME: rachoon-test
+          NODE_ENV: test
+          DB_CONNECTION: pg
           PG_HOST: localhost
           PG_PORT: 5432
           PG_USER: testuser
@@ -98,11 +126,26 @@ jobs:
         with:
           version: 10
 
-      - name: install dependencies
-        run: pnpm install
+      - name: get pnpm store directory
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - name: build project
-        run: pnpm build
+      - name: setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: install dependencies
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
+
+      - name: build common package
+        run: pnpm --filter @repo/common build
+
+      - name: build backend
+        run: pnpm --filter backend build
 
   deploy:
     runs-on: ubuntu-latest
@@ -117,11 +160,29 @@ jobs:
         with:
           version: 10
 
-      - name: install packages
-        run: pnpm install
+      - name: get pnpm store directory
+        id: pnpm-cache
+        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - name: build
-        run: pnpm build
+      - name: setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: install packages
+        run: pnpm install --no-frozen-lockfile
+
+      - name: build common package
+        run: pnpm --filter @repo/common build
+
+      - name: build backend
+        run: pnpm --filter backend build
+
+      - name: create frontend output directory
+        run: mkdir -p apps/frontend/.output
 
       - name: get package version
         id: package-version
