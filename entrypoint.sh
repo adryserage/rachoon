@@ -22,12 +22,11 @@ echo "postgres is ready"
 
 # create database if it doesn't exist
 echo "checking if database '$PG_DB_NAME' exists..."
-DB_EXISTS=$(PGPASSWORD=$PG_PASSWORD psql -h "$PG_HOST" -U "$PG_USER" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = :'dbname'" -v dbname="$PG_DB_NAME")
+DB_EXISTS=$(PGPASSWORD=$PG_PASSWORD psql -h "$PG_HOST" -U "$PG_USER" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname = '$PG_DB_NAME'")
 if [ "$DB_EXISTS" != "1" ]; then
   echo "creating database '$PG_DB_NAME'..."
-  PGPASSWORD=$PG_PASSWORD psql -h "$PG_HOST" -U "$PG_USER" -d postgres -v dbname="$PG_DB_NAME" <<-EOSQL
-		SELECT 'CREATE DATABASE ' || quote_ident(:'dbname')
-		WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = :'dbname')\gexec
+  PGPASSWORD=$PG_PASSWORD psql -h "$PG_HOST" -U "$PG_USER" -d postgres <<-EOSQL
+		CREATE DATABASE $PG_DB_NAME;
 	EOSQL
   echo "database created successfully"
 else

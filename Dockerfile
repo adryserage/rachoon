@@ -2,11 +2,12 @@ FROM node:23-alpine
 
 USER root
 
-RUN apk add --no-cache --update graphicsmagick ghostscript caddy dcron
+RUN apk add --no-cache --update graphicsmagick ghostscript caddy dcron postgresql-client
 
 WORKDIR /app
 COPY ./Caddyfile .
 COPY ./entrypoint.sh .
+RUN chmod +x ./entrypoint.sh
 
 RUN npm install -g pnpm
 RUN mkdir -p /app/frontend
