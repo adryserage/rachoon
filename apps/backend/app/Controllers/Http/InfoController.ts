@@ -1,4 +1,4 @@
-export default class AuthController {
+export default class InfoController {
   public async index() {
     const envs = {}
     process.env['RACHOON_VERSION'] = process.env.APP_VERSION

@@ -1,6 +1,9 @@
 import camelcaseKeys from "camelcase-keys";
 
 type FetchMethod = "get" | "post" | "put" | "delete" | "patch" | "head" | "options";
+
+let redirecting = false;
+
 export default class HttpClient {
   public static get = async (url: string, notify: boolean | { title: string; text: string; type?: string } = false) =>
     await this.doFetch(url, { method: "get" }, notify);
@@ -36,7 +39,25 @@ export default class HttpClient {
         method: opts.method,
         body: JSON.stringify(opts.body),
         headers: headers,
+        ignoreResponseError: true,
       });
+
+      console.log(`API Response: ${url} - Status: ${res.status}`);
+
+      if (res.status === 401) {
+        console.error('=== 401 UNAUTHORIZED DETECTED ===');
+        console.error('URL:', url);
+        console.error('Status:', res.status);
+
+        if (!redirecting && typeof window !== 'undefined') {
+          redirecting = true;
+          console.error('Clearing auth token and redirecting...');
+          localStorage.removeItem("auth-token");
+          console.error('Token cleared, forcing immediate redirect to /login');
+          window.location.href = "/login";
+        }
+        return {};
+      }
 
       if (typeof notify !== "boolean") {
         useToast(notify.title, notify.text, notify.type || "success");
@@ -47,7 +68,31 @@ export default class HttpClient {
       }
 
       return { body: camelcaseKeys(res._data as any, { deep: true }), headers: res.headers };
-    } catch (e) {
+    } catch (e: any) {
+      console.error('=== HTTP ERROR CAUGHT ===');
+      console.error('Error object:', e);
+      console.error('Status values:', {
+        status: e.status,
+        statusCode: e.statusCode,
+        responseStatus: e.response?.status,
+        data: e.data
+      });
+
+      const status = e.status || e.statusCode || e.response?.status;
+
+      if (status === 401) {
+        console.error('=== 401 ERROR IN CATCH BLOCK ===');
+
+        if (!redirecting && typeof window !== 'undefined') {
+          redirecting = true;
+          console.error('Clearing auth token and redirecting...');
+          localStorage.removeItem("auth-token");
+          console.error('Token cleared, forcing immediate redirect to /login');
+          window.location.href = "/login";
+        }
+        return {};
+      }
+
       if (notify) {
         this.notifyError(e);
       }

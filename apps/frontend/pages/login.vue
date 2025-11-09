@@ -8,9 +8,10 @@ const login = async (e) => {
   e.preventDefault();
   return await useAuth().loginEmailPassword(email.value, password.value);
 };
-// onMounted(() => {
-useAuth().init();
-// });
+
+onMounted(async () => {
+  await useAuth().init();
+});
 </script>
 
 <template>
