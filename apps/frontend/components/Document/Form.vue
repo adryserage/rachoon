@@ -133,71 +133,72 @@ const convert = () => {
         {{ e }}
       </li>
     </ul>
+    <div>
+      <div class="flex flex-row px-5 mb-5 pt-14">
+        <div class="w-1/3 px-5 py-3">
+          <div v-if="controller().isNew() && !controller().isReminder() && !controller().isOfferToConvert()">
+            <label class="label">
+              <span class="label-text">Select a client</span>
+            </label>
+            <DocumentClientAutoComplete required v-if="controller().type() !== 'reminders'" />
+          </div>
 
-    <div class="flex flex-row px-5 mb-5 pt-14">
-      <div class="w-1/3 px-5 py-3">
-        <div v-if="controller().isNew() && !controller().isReminder() && !controller().isOfferToConvert()">
-          <label class="label">
-            <span class="label-text">Select a client</span>
-          </label>
-          <DocumentClientAutoComplete required v-if="controller().type() !== 'reminders'" />
+          <div class="prose text-sm" v-if="controller().item.client">
+            <h3 class="m-0 p-0" v-if="!controller().isNew() || controller().isOfferToConvert()">{{ controller().item.client.name }}</h3>
+            <p class="m-0 p-0">
+              <br />
+              {{ controller().item.client.data.address.street }}
+              <br />
+              {{ controller().item.client.data.address.zip }}
+              {{ controller().item.client.data.address.city }}
+              <br />
+              {{ controller().item.client.data.address.country }}
+              <br />
+            </p>
+          </div>
         </div>
-
-        <div class="prose text-sm" v-if="controller().item.client">
-          <h3 class="m-0 p-0" v-if="!controller().isNew() || controller().isOfferToConvert()">{{ controller().item.client.name }}</h3>
-          <p class="m-0 p-0">
-            <br />
-            {{ controller().item.client.data.address.street }}
-            <br />
-            {{ controller().item.client.data.address.zip }}
-            {{ controller().item.client.data.address.city }}
-            <br />
-            {{ controller().item.client.data.address.country }}
-            <br />
-          </p>
+        <div class="flex flex-grow">
+          <div class="w-full prose text-center pt-3" v-if="controller().item.overdue">
+            <h2 class="m-0 p-0 text-warning">Invoice overdue!</h2>
+            <p>You should create a reminder.</p>
+            <NuxtLink class="btn btn-sm btn-neutral gap-2 no-underline" :to="`/reminders/new?invoice=${controller().item.id}`">
+              <FaIcon icon="fa-solid fa-bell" />
+              Create reminder
+            </NuxtLink>
+          </div>
+        </div>
+        <div class="flex w-1/3 justify-end">
+          <div class="">
+            <label class="label">
+              <span class="label-text">Invoice date:</span>
+            </label>
+            <DatePicker v-model="controller().item.data.date" />
+            <label class="label">
+              <span class="label-text">Due date:</span>
+            </label>
+            <DatePicker v-model="controller().item.data.dueDate" />
+          </div>
         </div>
       </div>
-      <div class="flex flex-grow">
-        <div class="w-full prose text-center pt-3" v-if="controller().item.overdue">
-          <h2 class="m-0 p-0 text-warning">Invoice overdue!</h2>
-          <p>You should create a reminder.</p>
-          <NuxtLink class="btn btn-sm btn-neutral gap-2 no-underline" :to="`/reminders/new?invoice=${controller().item.id}`">
-            <FaIcon icon="fa-solid fa-bell" />
-            Create reminder
-          </NuxtLink>
-        </div>
-      </div>
-      <div class="flex w-1/3 justify-end">
-        <div class="">
-          <label class="label">
-            <span class="label-text">Invoice date:</span>
-          </label>
-          <DatePicker v-model="controller().item.data.date" />
-          <label class="label">
-            <span class="label-text">Due date:</span>
-          </label>
-          <DatePicker v-model="controller().item.data.dueDate" />
-        </div>
-      </div>
-    </div>
 
-    <div class="alert px-5 text-error" v-if="controller().item.disabled()">
-      <FaIcon icon="fa-solid fa-triangle-exclamation" />
-      <p>
-        This {{ controller().singularType() }} cannot be modified.
-        <span v-if="controller().item.convertedFromOffer()">It's been converted from an offer.</span>
-      </p>
-    </div>
-    <DocumentItems />
-    <div class="divider p-0 m-0"></div>
-    <div class="flex flex-row gap-5 px-10 bg-base-100 py-5">
-      <div class="basis-2/4"></div>
-      <div class="basis-1/4">
-        <DocumentTaxOptions v-if="controller().type() !== 'reminders'" />
+      <div class="alert px-5 text-error" v-if="controller().item.disabled()">
+        <FaIcon icon="fa-solid fa-triangle-exclamation" />
+        <p>
+          This {{ controller().singularType() }} cannot be modified.
+          <span v-if="controller().item.convertedFromOffer()">It's been converted from an offer.</span>
+        </p>
       </div>
+      <DocumentItems />
+      <div class="divider p-0 m-0"></div>
+      <div class="flex flex-row gap-5 px-10 bg-base-100 py-5">
+        <div class="basis-2/4"></div>
+        <div class="basis-1/4">
+          <DocumentTaxOptions v-if="controller().type() !== 'reminders'" />
+        </div>
 
-      <div class="basis-1/4">
-        <DocumentTotals />
+        <div class="basis-1/4">
+          <DocumentTotals />
+        </div>
       </div>
     </div>
   </div>

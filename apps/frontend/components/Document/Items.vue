@@ -1,7 +1,15 @@
 <script setup lang="ts">
+import { onClickOutside } from "@vueuse/core";
+
 const document = useDocument().item;
 const positions = document.data.positions;
 const discountsCharges = document.data.discountsCharges;
+
+const formRef = ref(null);
+
+onClickOutside(formRef, () => {
+  document.unfocusPositions();
+});
 </script>
 
 <template>
@@ -19,7 +27,7 @@ const discountsCharges = document.data.discountsCharges;
       </tr>
     </thead>
 
-    <Draggable :list="positions" item-key="id" tag="tbody" handle=".handle" ghost-class="ghost">
+    <Draggable :list="positions" item-key="id" tag="tbody" handle=".handle" ghost-class="ghost" ref="formRef">
       <template #item="{ _, index }">
         <DocumentItemPosition :index="index" />
       </template>
@@ -53,8 +61,7 @@ const discountsCharges = document.data.discountsCharges;
     Add discounts or charges to apply them on the subtotal.
   </p>
   <div class="flex justify-center mt-5">
-    <button class="btn btn-xs btn-info btn-outline mb-10 gap-1" @click="document.addDiscountCharge()"
-      :disabled="document.disabled()">
+    <button class="btn btn-xs btn-info btn-outline mb-10 gap-1" @click="document.addDiscountCharge()" :disabled="document.disabled()">
       <FaIcon icon="fa-add" />
       Add discount or charge
     </button>

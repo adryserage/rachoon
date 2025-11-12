@@ -400,8 +400,12 @@ class Document {
   }
 
   focusPosition(index: number) {
-    this.data.positions.map((p) => (p.focused = false));
+    this.unfocusPositions();
     this.data.positions[index]!.focused = true;
+  }
+
+  unfocusPositions() {
+    this.data.positions.map((p) => (p.focused = false));
   }
 
   toJSON() {

@@ -19,7 +19,7 @@ useDashboard().get();
         </h2>
       </div>
 
-      <div class="stats stats-vertical md:stats-horizontal flex-col md:flex-row flex shadow">
+      <div class="stats stats-vertical lg:stats-horizontal flex-col lg:flex-row flex shadow">
         <div class="stat">
           <div class="stat-figure text-info text-3xl">
             <FaIcon icon="fa-solid fa-check" />

@@ -15,7 +15,7 @@ position().unit = position().unit || units.filter((u) => u.default)[0].title;
   <tr>
     <td colspan="8">
       <div class="collapse" :class="{ 'collapse-open': position().focused }">
-        <table class="">
+        <table class="table overflow-x-scroll">
           <tbody>
             <tr>
               <td class="handle" width="20">
@@ -48,7 +48,7 @@ position().unit = position().unit || units.filter((u) => u.default)[0].title;
                   </select>
                 </div>
               </td>
-              <td width="170">
+              <td width="150">
                 <label class="input-group">
                   <input
                     type="text"
@@ -64,12 +64,12 @@ position().unit = position().unit || units.filter((u) => u.default)[0].title;
               <td width="120">
                 <label class="input-group" v-if="document.type !== 'reminder'">
                   <select class="select select-bordered select-sm" v-model="position().tax" :disabled="document.disabled()">
-                    <option v-for="r in taxRates" :value="r.rate" :key="r.rate">{{ r.rate }}%</option>
+                    <option v-for="r in taxRates" :value="r.rate" :key="r.rate">{{ r.rate }}</option>
                   </select>
                   <span>%</span>
                 </label>
               </td>
-              <td width="120">
+              <td width="110">
                 <label class="input-group" v-if="document.type !== 'reminder'">
                   <input
                     type="text"
@@ -111,8 +111,8 @@ position().unit = position().unit || units.filter((u) => u.default)[0].title;
               <td width="50">
                 <label
                   class="btn btn-circle btn-xs mr-2 text-error"
+                  :class="document.disabled() ? 'btn-disabled' : ''"
                   @click="document.removePosition(index)"
-                  :disabled="document.disabled()"
                 >
                   <FaIcon icon="fa-xmark" />
                 </label>

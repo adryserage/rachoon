@@ -5,13 +5,13 @@ const { isOpen } = useDrawer();
 <template>
   <div class="drawer lg:drawer-open">
     <input id="app-drawer" type="checkbox" class="drawer-toggle" v-model="isOpen" />
-    <div class="drawer-content lg:pl-80">
+    <div class="drawer-content lg:pl-64">
       <slot />
     </div>
     <div class="drawer-side !fixed">
       <label for="app-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
 
-      <div class="flex flex-col min-h-dvh max-h-dvh h-dvh bg-base-100 w-80 border-r border-base-300">
+      <div class="flex flex-col min-h-dvh max-h-dvh h-dvh bg-base-100 w-64 border-r border-base-300">
         <Logo />
         <div class="divider m-0 p-0"></div>
         <div class="overflow-y-auto">
