@@ -4,3 +4,5 @@ packages:
   - "!**/build"
   - "!**/dist"
   - "!**/node_modules"
+neverBuiltDependencies: []
+dangerouslyAllowAllBuilds: true
